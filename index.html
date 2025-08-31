@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -6,16 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Meta CDUT - 3D查看器</title>
-    <!-- 外部资源 -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- 本地加载Three.js及插件 -->
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./GLTFLoader.js"></script>
-
-    <!-- Tailwind配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -33,127 +28,92 @@
             }
         }
     </script>
-
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
-
             .backdrop-blur {
                 backdrop-filter: blur(8px);
             }
-
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             }
-
             .control-btn {
                 @apply p-3 rounded-full transition transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
-
             .axis-btn {
                 @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
-
             .panel {
                 @apply bg-dark/70 backdrop-blur border border-white/10 rounded-xl transition transition-all duration-300;
             }
-
-            /* 移动端控制按钮 - 调整位置使其可见 */
             .mobile-control {
                 @apply fixed w-14 h-14 rounded-full bg-dark/60 backdrop-blur flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90;
             }
-
-            /* 滑块样式确保可见性 */
             input[type="range"] {
                 @apply appearance-none w-full h-2 bg-white/20 rounded-full outline-none;
             }
-
                 input[type="range"]::-webkit-slider-thumb {
                     @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer;
                 }
-
                 input[type="range"]::-moz-range-thumb {
                     @apply w-4 h-4 bg-primary rounded-full cursor-pointer border-none;
                 }
-
             .slider-value {
                 @apply text-xs text-light/60 mt-1 flex justify-between;
             }
-
-            /* 触摸端提示 */
             .touch-hint {
                 @apply fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark/70 backdrop-blur px-4 py-2 rounded-full text-sm z-30 hidden md:block;
             }
-
-            /* 建筑列表样式 */
             .building-list-item {
                 @apply p-2 rounded-lg hover:bg-primary/20 cursor-pointer transition-all duration-200 text-sm;
             }
-
                 .building-list-item.active {
                     @apply bg-primary/30;
                 }
-
             .search-container {
                 @apply relative w-full mb-4;
             }
-
             .search-results {
                 @apply relative w-full max-h-60 overflow-y-auto;
             }
-
             .search-result-item {
                 @apply p-2 hover:bg-primary/20 cursor-pointer transition-all text-sm;
             }
-
-            /* 移动端特定样式 */
             @media (max-width: 768px) {
-                /* 缩小属性控制面板 */
                 #propertiesPanel, #buildingsPanel {
                     width: 240px !important;
                     padding: 0.75rem !important;
                 }
-
                     #propertiesPanel h3, #buildingsPanel h3 {
                         font-size: 1rem !important;
                         margin-bottom: 0.75rem !important;
                     }
-
                     #propertiesPanel .space-y-4 > div {
                         margin-bottom: 0.75rem !important;
                     }
-
                     #propertiesPanel label {
                         font-size: 0.75rem !important;
                     }
-
-                /* 缩小操作说明窗口 */
                 #modalContent {
                     max-width: 280px !important;
                     padding: 1rem !important;
                 }
-
                     #modalContent h2 {
                         font-size: 1.25rem !important;
                     }
-
                     #modalContent p, #modalContent li {
                         font-size: 0.85rem !important;
                     }
-
-                /* 调整移动端控制按钮位置 */
                 #mobileResetView {
                     bottom: 60px !important;
                     left: 16px !important;
                 }
-
                 #mobileOrbitToggle {
                     bottom: 16px !important;
                     left: 16px !important;
                 }
-
                 #mobileWireframeToggle {
                     top: 80px !important;
                     right: 16px !important;
@@ -169,7 +129,6 @@
                 <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary text-shadow">Meta CDUT</h1>
                 <span class="text-xs text-light/60 ml-1">Developed by unq</span>
             </div>
-
             <div class="flex items-center space-x-4 w-full md:w-auto justify-end">
                 <button id="infoBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
                     <i class="fa fa-info text-light"></i>
@@ -177,28 +136,23 @@
                 <button id="fullscreenBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
                     <i class="fa fa-expand text-light"></i>
                 </button>
-                <!-- 模型列表按钮 -->
                 <button id="toggleBuildingsBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
                     <i class="fa fa-list text-light"></i>
                 </button>
-                <!-- 属性面板按钮 -->
                 <button id="togglePropertiesBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
                     <i class="fa fa-sliders text-light"></i>
                 </button>
             </div>
         </div>
     </header>
-
     <main class="relative h-full w-full">
         <canvas id="viewerCanvas" class="w-full h-full"></canvas>
-
         <div id="initialLoading" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 <p id="loadingStatus" class="mt-4 text-lg">初始化3D环境中...</p>
             </div>
         </div>
-
         <div id="resourceError" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50 hidden">
             <div class="text-center p-6 panel max-w-md">
                 <i class="fa fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
@@ -209,7 +163,6 @@
                 </button>
             </div>
         </div>
-
         <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-40 transition-opacity duration-500 hidden">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -219,8 +172,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 移动端控制按钮 -->
         <div class="fixed:hidden">
             <button id="mobileResetView" class="mobile-control bottom-6 left-6" title="重置视图">
                 <i class="fa fa-home text-light text-xl"></i>
@@ -232,14 +183,10 @@
                 <i class="fa fa-cubes text-light text-xl"></i>
             </button>
         </div>
-
-        <!-- 触摸端端操作提示 -->
         <div class="touch-hint">
             <span>单指拖动旋转 | 双指拖动平移 | 双指捏合缩放</span>
         </div>
-
     </main>
-
     <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 panel px-4 py-2 flex items items-center space-x-6 z-40 opacity-50 pointer-events-events-none transition-all duration-300 hidden md:flex" id="controlPanel">
         <button id="cameraOrbitToggle" class="control-btn" title="切换自动旋转">
             <i class="fa fa-refresh text-light"></i>
@@ -257,15 +204,11 @@
             <i class="fa fa-cubes text-light"></i>
         </button>
     </div>
-
-    <!-- 属性控制窗口 -->
     <div id="propertiesPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden md-hidden md:block opacity-100 pointer-events-events-auto transition-all duration-300 z-40">
         <h3 class="font-bold text-primary mb-4 flex items-center">
             <i class="fa fa-sliders mr-2"></i>属性控制
         </h3>
-
         <div class="space-y-4">
-            <!-- 旋转和平移速度控制 -->
             <div>
                 <label class="block text-sm mb-1 text-light/80">旋转灵敏度</label>
                 <input id="rotationSensitivity" type="range" min="0.001" max="0.01" step="0.0005" value="0.005"
@@ -275,8 +218,6 @@
                     <span>范围: 0.001-0.01</span>
                 </div>
             </div>
-
-            <!-- 平移速度滑块上限值翻3倍 (0.5 → 1.5) -->
             <div>
                 <label class="block text-sm mb-1 text-light/80">拖拽平移灵敏度</label>
                 <input id="panSensitivity" type="range" min="0.05" max="1.5" step="0.01" value="0.1"
@@ -286,7 +227,6 @@
                     <span>范围: 0.05-1.5</span>
                 </div>
             </div>
-
             <div>
                 <label class="block text-sm mb-1 text-light/80">旋转速度（绕蓝轴Z）</label>
                 <input id="orbitSpeed" type="range" min="0.001" max="0.02" step="0.001" value="0.01"
@@ -296,7 +236,6 @@
                     <span>范围: 0.001-0.02</span>
                 </div>
             </div>
-
             <div>
                 <label class="block text-sm mb-1 text-light/80">移动速度</label>
                 <input id="movementSpeed" type="range" min="0.1" max="5" step="0.1" value="1"
@@ -306,8 +245,6 @@
                     <span>范围: 0.1-5</span>
                 </div>
             </div>
-
-            <!-- 光照控制 - 降低强度以减少对比度 -->
             <div>
                 <label class="block text-sm mb-1 text-light/80">环境光强度</label>
                 <input id="ambientLight" type="range" min="0" max="5" step="0.1" value="1.2"
@@ -317,7 +254,6 @@
                     <span>范围: 0-5</span>
                 </div>
             </div>
-
             <div>
                 <label class="block text-sm mb-1 text-light/80">方向光强度</label>
                 <input id="directionalLight" type="range" min="0" max="5" step="0.1" value="1.5"
@@ -327,7 +263,6 @@
                     <span>范围: 0-5</span>
                 </div>
             </div>
-
             <div>
                 <label class="block text-sm mb-1 text-light/80">背景亮度</label>
                 <input id="backgroundBrightness" type="range" min="0" max="1" step="0.05" value="0.4"
@@ -339,25 +274,18 @@
             </div>
         </div>
     </div>
-
-    <!-- 模型列表窗口 -->
     <div id="buildingsPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden opacity-0 pointer-events-none transition-all duration-300 z-40">
         <h3 class="font-bold text-primary mb-4 flex items-center">
             <i class="fa fa-cubes mr-2"></i>模型列表
         </h3>
-
-        <!-- 搜索框移到模型列表内 -->
         <div class="search-container">
             <input type="text" id="buildingSearch" placeholder="搜索模型..."
                    class="w-full bg-dark/50 border border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
         </div>
-
         <div id="buildingsList" class="search-results">
-            <!-- 模型列表将在这里动态生成 -->
             <div class="text-light/60 text-sm text-center py-4">加载模型中...</div>
         </div>
     </div>
-
     <div id="infoModal" class="fixed inset-0 bg-black/60 backdrop-blur z-50 flex items-center justify-center hidden">
         <div class="panel p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
             <div class="flex justify-between items-center mb-4">
@@ -368,7 +296,6 @@
             </div>
             <div class="space-y-4">
                 <p class="text-light/80">此查看器用于展示CDUT三维重建模型</p>
-
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">桌面端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -380,7 +307,6 @@
                         <li><i class="fa fa-keyboard-o mr-2 text-primary"></i> 上下键 - 摄像机上下移动</li>
                     </ul>
                 </div>
-
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">移动端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -390,7 +316,6 @@
                         <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 双击 - 设置旋转中心</li>
                     </ul>
                 </div>
-
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">通用控制：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -403,9 +328,7 @@
             </div>
         </div>
     </div>
-
     <script>
-        // 全局变量
         let scene, camera, renderer, controls, model;
         let ambientLight, directionalLight, cameraLight;
         let cameraTarget = new THREE.Vector3(0, 0, 0);
@@ -414,22 +337,15 @@
         let movementSpeed = 1;
         let isWireframe = false;
         let cameraDistance = 100;
-        // 明确旋转轴：红轴(X)和蓝轴(Z)
-        let rotationX = 0;  // 绕红轴(X轴)旋转角度
-        let rotationZ = 0;  // 绕蓝轴(Z轴)旋转角度
+        let rotationX = 0;
+        let rotationZ = 0;
         let isLeftDragging = false;
-        let isMiddleDragging = false; // 改为使用鼠标滚轮键(中键)
+        let isMiddleDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
-
-        // 模型相关变量
-        let models = []; // 存储所有模型
-        let activeModelId = -1; // 当前选中的模型ID
-
-        // 灵敏度设置
+        let models = [];
+        let activeModelId = -1;
         let rotationSensitivity = 0.005;
         let panSensitivity = 0.1;
-
-        // 触摸相关变量
         let touchStart = {
             touches: 0,
             distance: 0,
@@ -437,13 +353,10 @@
             rotation: { x: 0, z: 0 },
             distance: 0
         };
-
         const keys = {
             w: false, a: false, s: false, d: false,
             ArrowUp: false, ArrowDown: false
         };
-
-        // DOM元素引用
         const canvas = document.getElementById('viewerCanvas');
         const initialLoading = document.getElementById('initialLoading');
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -454,8 +367,6 @@
         const modelsPanel = document.getElementById('buildingsPanel');
         const modelsList = document.getElementById('buildingsList');
         const modelSearch = document.getElementById('buildingSearch');
-
-        // 检查Three.js是否加载成功
         function checkThreeJsLoaded() {
             if (typeof THREE === 'undefined') {
                 document.getElementById('initialLoading').classList.add('hidden');
@@ -464,77 +375,49 @@
             }
             return true;
         }
-
-        // 初始化应用
         function initApplication() {
             console.log('初始化应用程序');
-
-            // 检查Three.js是否加载成功
             if (!checkThreeJsLoaded()) return;
-
             setTimeout(() => {
                 document.getElementById('initialLoading').classList.add('hidden');
-
-                // 初始化后自动加载模型
-                loadModel('model.glb');
-
-                // 初始化后显示滑块面板
+                loadModel('https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb');
                 showPropertiesPanel();
             }, 500);
-
             initScene();
-
-            // 设置搜索功能
             setupSearchFunctionality();
-
-            // 设置滑块面板显示/隐藏按钮事件
             document.getElementById('togglePropertiesBtn').addEventListener('click', () => {
                 togglePropertiesPanel();
                 if (modelsPanel.classList.contains('opacity-100')) {
                     hideModelsPanel();
                 }
             });
-
-            // 设置模型列表显示/隐藏按钮事件
             document.getElementById('toggleBuildingsBtn').addEventListener('click', () => {
                 toggleModelsPanel();
                 if (propertiesPanel.classList.contains('opacity-100')) {
                     hidePropertiesPanel();
                 }
             });
-
-            // 确保属性面板在移动设备上有替代显示方式
             if (window.innerWidth < 768) {
-                // 移动设备默认隐藏滑块面板
                 hidePropertiesPanel();
                 hideModelsPanel();
-
-                // 确保移动设备上有切换按钮
                 const mobileSliderButton = document.getElementById('togglePropertiesBtn');
                 if (mobileSliderButton) {
                     mobileSliderButton.style.display = 'flex';
                 }
-
                 const mobileModelsButton = document.getElementById('toggleBuildingsBtn');
                 if (mobileModelsButton) {
                     mobileModelsButton.style.display = 'flex';
                 }
             }
         }
-
-        // 显示滑块面板
         function showPropertiesPanel() {
             propertiesPanel.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
             propertiesPanel.classList.add('opacity-100', 'pointer-events-auto');
         }
-
-        // 隐藏滑块面板 - 改为完全透明
         function hidePropertiesPanel() {
             propertiesPanel.classList.add('opacity-0', 'pointer-events-none');
             propertiesPanel.classList.remove('opacity-100', 'pointer-events-auto');
         }
-
-        // 切换滑块面板显示状态
         function togglePropertiesPanel() {
             if (propertiesPanel.classList.contains('opacity-100')) {
                 hidePropertiesPanel();
@@ -542,20 +425,14 @@
                 showPropertiesPanel();
             }
         }
-
-        // 显示模型列表面板
         function showModelsPanel() {
             modelsPanel.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
             modelsPanel.classList.add('opacity-100', 'pointer-events-auto');
         }
-
-        // 隐藏模型列表面板
         function hideModelsPanel() {
             modelsPanel.classList.add('opacity-0', 'pointer-events-none');
             modelsPanel.classList.remove('opacity-100', 'pointer-events-auto');
         }
-
-        // 切换模型列表面板显示状态
         function toggleModelsPanel() {
             if (modelsPanel.classList.contains('opacity-100')) {
                 hideModelsPanel();
@@ -563,23 +440,15 @@
                 showModelsPanel();
             }
         }
-
-        // 设置搜索功能
         function setupSearchFunctionality() {
-            // 搜索输入事件 - 实时筛选
             modelSearch.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 filterModels(searchTerm);
             });
-
-            // 初始加载时显示所有模型
             filterModels('');
         }
-
-        // 根据搜索词筛选模型
         function filterModels(searchTerm) {
             modelsList.innerHTML = '';
-
             if (models.length === 0) {
                 const noModelMsg = document.createElement('div');
                 noModelMsg.className = 'text-light/60 text-sm text-center py-4';
@@ -587,30 +456,22 @@
                 modelsList.appendChild(noModelMsg);
                 return;
             }
-
-            // 过滤模型
             let filteredModels = models;
             if (searchTerm.length > 0) {
                 filteredModels = models.filter(model =>
                     model.name.toLowerCase().includes(searchTerm)
                 );
             }
-
-            // 显示结果
             if (filteredModels.length > 0) {
-                // 按名称排序
                 filteredModels.sort((a, b) => a.name.localeCompare(b.name));
-
                 filteredModels.forEach(model => {
                     const listItem = document.createElement('div');
                     listItem.className = `building-list-item ${activeModelId === model.id ? 'active' : ''}`;
                     listItem.textContent = model.name;
                     listItem.dataset.modelId = model.id;
-
                     listItem.addEventListener('click', () => {
                         moveToModel(model.id);
                     });
-
                     modelsList.appendChild(listItem);
                 });
             } else {
@@ -620,35 +481,18 @@
                 modelsList.appendChild(noResult);
             }
         }
-
-        // 初始化场景
         function initScene() {
             console.log('初始化3D场景');
-
-            // 创建场景
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x3D4758);
-
-            // 设置光照 - 降低强度以减少对比度
-            ambientLight = new THREE.AmbientLight(0xffffff, 1.2); // 降低环境光强度
+            ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
             scene.add(ambientLight);
-
-            directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // 降低方向光强度
+            directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
             directionalLight.position.set(10, 20, 15);
             scene.add(directionalLight);
-
-            // 添加摄像机方向光源
-            cameraLight = new THREE.PointLight(0xffffff, 1.0, 1000); // 降低强度减少对比度
+            cameraLight = new THREE.PointLight(0xffffff, 1.0, 1000);
             scene.add(cameraLight);
-
-            // 注释掉坐标轴指示器 - 关闭原点xyz轴
-            // const axesHelper = new THREE.AxesHelper(15);
-            // scene.add(axesHelper);
-
-            // 设置相机
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
-
-            // 设置渲染器
             renderer = new THREE.WebGLRenderer({
                 canvas: canvas,
                 antialias: true,
@@ -657,54 +501,33 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.5; // 降低曝光减少对比度
-
-            // 初始化控制器 (禁用默认事件处理)
+            renderer.toneMappingExposure = 1.5;
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enabled = false;
-
-            // 初始相机位置
             updateCameraPosition();
-
-            // 确保canvas在最上层，能接收事件
             canvas.style.position = 'relative';
             canvas.style.zIndex = '10';
-
-            // 设置事件监听
             setupEventListeners();
-
-            // 启动动画循环
             animate();
         }
-
-        // 计算两点之间的距离
         function getDistance(touch1, touch2) {
             const dx = touch2.clientX - touch1.clientX;
             const dy = touch2.clientY - touch1.clientY;
             return Math.sqrt(dx * dx + dy * dy);
         }
-
-        // 计算两点的中心
         function getCenter(touch1, touch2) {
             return {
                 x: (touch1.clientX + touch2.clientX) / 2,
                 y: (touch1.clientY + touch2.clientY) / 2
             };
         }
-
-        // 设置事件监听
         function setupEventListeners() {
             console.log('设置事件监听器');
             const canvasElement = document.getElementById('viewerCanvas');
-
-            // 确保canvas可以获取焦点
             canvasElement.tabIndex = 1;
             canvasElement.style.touchAction = 'none';
-
-            // 鼠标按下事件
             document.addEventListener('mousedown', (event) => {
                 if (event.target === canvasElement) {
-                    // 左键拖拽 - 旋转视角
                     if (event.button === 0) {
                         console.log('左键按下 - 开始旋转');
                         isLeftDragging = true;
@@ -713,7 +536,6 @@
                             y: event.clientY
                         };
                     }
-                    // 滚轮键(中键)拖拽 - 平移相机（反向）
                     else if (event.button === 1) {
                         console.log('中键按下 - 开始平移');
                         isMiddleDragging = true;
@@ -726,707 +548,292 @@
                     event.preventDefault();
                     event.stopPropagation();
                 }
-            }, true);
-
-            // 鼠标移动事件
+            });
             document.addEventListener('mousemove', (event) => {
-                // 左键拖拽旋转
-                if (isLeftDragging && !isOrbiting) {
-                    const deltaX = event.clientX - previousMousePosition.x;
-                    const deltaY = event.clientY - previousMousePosition.y;
-
-                    // 水平拖动影响蓝轴(Z轴)旋转
+                if (!isLeftDragging && !isMiddleDragging) return;
+                const deltaX = event.clientX - previousMousePosition.x;
+                const deltaY = event.clientY - previousMousePosition.y;
+                if (isLeftDragging) {
                     rotationZ -= deltaX * rotationSensitivity;
-                    // 垂直拖动影响红轴(X轴)旋转
-                    rotationX += deltaY * rotationSensitivity;
-
-                    // 限制X轴旋转角度，防止过度翻转
-                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
-
-                    updateCameraPosition();
-
-                    previousMousePosition = {
-                        x: event.clientX,
-                        y: event.clientY
-                    };
-
-                    event.preventDefault();
-                    event.stopPropagation();
+                    rotationX -= deltaY * rotationSensitivity;
+                    rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
                 }
-                // 中键拖拽平移（反向）
-                else if (isMiddleDragging) {
-                    const deltaX = event.clientX - previousMousePosition.x;
-                    const deltaY = event.clientY - previousMousePosition.y;
-
-                    // 水平拖拽(X轴)，垂直拖拽(Z轴)
-                    const panX = deltaX * (movementSpeed * panSensitivity);
-                    const panZ = deltaY * (movementSpeed * panSensitivity);
-
-                    panCamera(panX, 0, panZ);
-
-                    previousMousePosition = {
-                        x: event.clientX,
-                        y: event.clientY
-                    };
-
-                    event.preventDefault();
-                    event.stopPropagation();
+                if (isMiddleDragging) {
+                    const moveX = deltaX * panSensitivity * 0.1;
+                    const moveY = deltaY * panSensitivity * 0.1;
+                    cameraTarget.x += moveX;
+                    cameraTarget.y -= moveY;
                 }
-            }, true);
-
-            // 鼠标释放事件
+                previousMousePosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+                event.preventDefault();
+                event.stopPropagation();
+            });
             document.addEventListener('mouseup', (event) => {
-                if (event.button === 0 && isLeftDragging) {
-                    console.log('左键释放 - 结束旋转');
+                if (event.button === 0) {
                     isLeftDragging = false;
-                    event.preventDefault();
-                    event.stopPropagation();
                 }
-                else if (event.button === 1 && isMiddleDragging) {
-                    console.log('中键释放 - 结束平移');
+                if (event.button === 1) {
                     isMiddleDragging = false;
-                    event.preventDefault();
-                    event.stopPropagation();
                 }
-            }, true);
-
-            // 触摸开始事件 - 移动端
-            canvasElement.addEventListener('touchstart', (event) => {
                 event.preventDefault();
-                const touches = event.touches;
-
-                if (touches.length === 1) {
-                    // 单指触摸 - 旋转
-                    touchStart.touches = 1;
-                    touchStart.center = {
-                        x: touches[0].clientX,
-                        y: touches[0].clientY
-                    };
-                    touchStart.rotation = { x: rotationX, z: rotationZ };
-                }
-                else if (touches.length === 2) {
-                    // 双指触摸 - 缩放和平移
-                    touchStart.touches = 2;
-                    touchStart.distance = getDistance(touches[0], touches[1]);
-                    touchStart.center = getCenter(touches[0], touches[1]);
-                    touchStart.previousCenter = { ...touchStart.center };
-                    touchStart.initialDistance = cameraDistance;
-                }
-            }, { passive: false });
-
-            // 触摸移动事件 - 移动端
-            canvasElement.addEventListener('touchmove', (event) => {
-                event.preventDefault();
-                const touches = event.touches;
-
-                if (touches.length === 1 && touchStart.touches === 1) {
-                    // 单指移动 - 旋转
-                    const currentCenter = {
-                        x: touches[0].clientX,
-                        y: touches[0].clientY
-                    };
-
-                    const deltaX = currentCenter.x - touchStart.center.x;
-                    const deltaY = currentCenter.y - touchStart.center.y;
-
-                    rotationZ = touchStart.rotation.z - deltaX * rotationSensitivity;
-                    rotationX = touchStart.rotation.x + deltaY * rotationSensitivity;
-
-                    // 限制X轴旋转角度
-                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
-
-                    updateCameraPosition();
-                }
-                else if (touches.length === 2 && touchStart.touches === 2) {
-                    // 双指移动 - 缩放和平移
-                    const currentDistance = getDistance(touches[0], touches[1]);
-                    const currentCenter = getCenter(touches[0], touches[1]);
-
-                    // 计算缩放比例
-                    const scale = currentDistance / touchStart.distance;
-                    cameraDistance = touchStart.initialDistance / scale;
-
-                    // 计算平移
-                    const deltaX = currentCenter.x - touchStart.previousCenter.x;
-                    const deltaY = currentCenter.y - touchStart.previousCenter.y;
-
-                    const panX = deltaX * (movementSpeed * panSensitivity * 0.5);
-                    const panY = deltaY * (movementSpeed * panSensitivity * 0.5);
-
-                    panCamera(panX, panY, 0);
-
-                    // 更新上一帧的中心位置
-                    touchStart.previousCenter = { ...currentCenter };
-
-                    updateCameraPosition();
-                }
-            }, { passive: false });
-
-            // 触摸结束事件 - 移动端
-            canvasElement.addEventListener('touchend', (event) => {
-                touchStart.touches = 0;
+                event.stopPropagation();
             });
-
-            // 阻止右键菜单
-            canvasElement.addEventListener('contextmenu', (event) => {
-                event.preventDefault();
-                return false;
-            });
-
-            // 鼠标滚轮缩放 - 取消上下限
             canvasElement.addEventListener('wheel', (event) => {
                 event.preventDefault();
-
-                // 根据滚轮方向调整相机距离，已取消上下限
-                if (event.deltaY < 0) {
-                    // 滚轮向上 - 放大
-                    cameraDistance = cameraDistance * 0.95;
-                } else {
-                    // 滚轮向下 - 缩小
-                    cameraDistance = cameraDistance * 1.05;
-                }
-
+                const delta = Math.max(-1, Math.min(1, event.deltaY));
+                cameraDistance += delta * movementSpeed * 2;
+                cameraDistance = Math.max(10, Math.min(500, cameraDistance));
                 updateCameraPosition();
-            });
-
-            // 双击设置旋转中心（同时支持桌面和移动）
+            }, { passive: false });
             canvasElement.addEventListener('dblclick', (event) => {
-                if (!model) return;
-
                 const rect = canvasElement.getBoundingClientRect();
-                let clientX, clientY;
-
-                // 处理触摸双击
-                if (event.type === 'dblclick' && event.touches) {
-                    clientX = event.touches[0].clientX;
-                    clientY = event.touches[0].clientY;
-                } else {
-                    clientX = event.clientX;
-                    clientY = event.clientY;
-                }
-
-                const mouse = new THREE.Vector2();
-                mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-                mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-
+                const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
                 const raycaster = new THREE.Raycaster();
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObject(model, true);
-
+                raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+                const intersects = raycaster.intersectObjects(scene.children, true);
                 if (intersects.length > 0) {
-                    const newCenter = intersects[0].point;
-                    updateCameraTarget(newCenter);
+                    cameraTarget.copy(intersects[0].point);
                 }
             });
-
-            // 键盘控制
-            window.addEventListener('keydown', (e) => {
-                if (keys.hasOwnProperty(e.key)) {
-                    keys[e.key] = true;
+            canvasElement.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                touchStart.touches = event.touches.length;
+                if (event.touches.length === 1) {
+                    touchStart.center = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+                    touchStart.rotation = { x: rotationX, z: rotationZ };
+                    isLeftDragging = true;
+                } else if (event.touches.length === 2) {
+                    touchStart.center = getCenter(event.touches[0], event.touches[1]);
+                    touchStart.distance = getDistance(event.touches[0], event.touches[1]);
+                    isMiddleDragging = true;
                 }
             });
-
-            window.addEventListener('keyup', (e) => {
-                if (keys.hasOwnProperty(e.key)) {
-                    keys[e.key] = false;
+            canvasElement.addEventListener('touchmove', (event) => {
+                event.preventDefault();
+                if (event.touches.length !== touchStart.touches) {
+                    touchStart.touches = event.touches.length;
+                    return;
+                }
+                if (event.touches.length === 1 && isLeftDragging) {
+                    const deltaX = event.touches[0].clientX - touchStart.center.x;
+                    const deltaY = event.touches[0].clientY - touchStart.center.y;
+                    rotationZ -= deltaX * rotationSensitivity * 0.5;
+                    rotationX -= deltaY * rotationSensitivity * 0.5;
+                    rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+                } else if (event.touches.length === 2 && isMiddleDragging) {
+                    const currentCenter = getCenter(event.touches[0], event.touches[1]);
+                    const currentDistance = getDistance(event.touches[0], event.touches[1]);
+                    const moveX = (currentCenter.x - touchStart.center.x) * panSensitivity * 0.01;
+                    const moveY = (currentCenter.y - touchStart.center.y) * panSensitivity * 0.01;
+                    cameraTarget.x += moveX;
+                    cameraTarget.y -= moveY;
+                    const scale = currentDistance / touchStart.distance;
+                    cameraDistance *= scale;
+                    cameraDistance = Math.max(10, Math.min(500, cameraDistance));
+                    touchStart.center = currentCenter;
+                    touchStart.distance = currentDistance;
                 }
             });
-
-            // 窗口大小调整
-            window.addEventListener('resize', onWindowResize);
-
-            // 控制面板按钮事件
-            setupControlPanelEvents();
-
-            // 属性控制
-            setupPropertyControls();
-        }
-
-        // 识别模型中的所有子模型
-        function identifyModels(model) {
-            models = []; // 清空现有模型列表
-            let modelId = 0;
-
-            // 遍历模型中的所有网格对象，不进行关键词过滤
-            model.traverse(child => {
-                if (child.isMesh) { // 所有网格模型都被识别
-                    // 计算模型的边界盒以获取位置和大小
-                    const box = new THREE.Box3().setFromObject(child);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-
-                    // 使用名称或生成一个名称
-                    let modelName = child.name || `模型 ${modelId + 1}`;
-                    // 清理名称中的特殊字符
-                    modelName = modelName.replace(/_/g, ' ');
-
-                    // 添加到模型数组
-                    models.push({
-                        id: modelId,
-                        name: modelName,
-                        object: child,
-                        position: center,
-                        size: size,
-                        // 计算模型高度
-                        height: size.y,
-                        // 计算适合观察的距离
-                        viewDistance: Math.max(size.x, size.y, size.z) * 2
-                    });
-
-                    modelId++;
+            canvasElement.addEventListener('touchend', (event) => {
+                isLeftDragging = false;
+                isMiddleDragging = false;
+                touchStart.touches = 0;
+            });
+            window.addEventListener('keydown', (event) => {
+                if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+                    keys[event.key] = true;
+                    event.preventDefault();
                 }
             });
-
-            // 如果没有识别到任何网格模型，使用整个模型作为一个模型
-            if (models.length === 0 && model.isObject3D) {
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-
-                models.push({
-                    id: 0,
-                    name: "主模型",
-                    object: model,
-                    position: center,
-                    size: size,
-                    height: size.y,
-                    viewDistance: Math.max(size.x, size.y, size.z) * 2
-                });
-            }
-
-            console.log(`识别到 ${models.length} 个模型`);
-            // 模型加载后更新列表，应用当前搜索词
-            filterModels(modelSearch.value.toLowerCase().trim());
-        }
-
-        // 移动到指定模型
-        function moveToModel(modelId) {
-            const model = models.find(m => m.id === modelId);
-            if (!model) return;
-
-            // 更新当前选中的模型
-            activeModelId = modelId;
-            // 更新列表以显示选中状态
-            filterModels(modelSearch.value.toLowerCase().trim());
-
-            // 停止自动旋转
-            isOrbiting = false;
-            document.getElementById('cameraOrbitToggle').classList.remove('bg-primary/20');
-            document.getElementById('mobileOrbitToggle').classList.remove('bg-primary/20');
-
-            // 设置相机目标为模型中心
-            cameraTarget.copy(model.position);
-
-            // 设置相机距离为模型大小的2倍
-            cameraDistance = model.viewDistance;
-
-            // 设置一个稍微倾斜的视角
-            rotationX = Math.PI * 0.15; // 约27度
-            rotationZ = Math.PI * 0.25; // 约45度
-
-            // 更新相机位置
-            updateCameraPosition();
-
-            // 在移动设备上，选择后隐藏模型列表
-            if (window.innerWidth < 768) {
-                hideModelsPanel();
-            }
-        }
-
-        function updateCameraTarget(newTarget) {
-            cameraTarget.copy(newTarget);
-            updateCameraPosition();
-        }
-
-        function setupControlPanelEvents() {
-            // 自动旋转切换 - 明确围绕蓝轴(Z轴)
-            const orbitToggleElements = [
-                document.getElementById('cameraOrbitToggle'),
-                document.getElementById('mobileOrbitToggle')
-            ];
-
-            orbitToggleElements.forEach(el => {
-                if (el) {
-                    el.addEventListener('click', () => {
-                        isOrbiting = !isOrbiting;
-                        orbitToggleElements.forEach(btn => {
-                            btn.classList.toggle('bg-primary/20', isOrbiting);
-                        });
-                    });
+            window.addEventListener('keyup', (event) => {
+                if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
+                    keys[event.key] = false;
+                    event.preventDefault();
                 }
             });
-
-            // 重置视图
-            const resetViewElements = [
-                document.getElementById('resetView'),
-                document.getElementById('mobileResetView')
-            ];
-
-            resetViewElements.forEach(el => {
-                if (el) {
-                    el.addEventListener('click', () => {
-                        cameraDistance = 100;
-                        rotationX = 0;  // 重置红轴(X)旋转
-                        rotationZ = 0;  // 重置蓝轴(Z)旋转
-                        cameraTarget.set(0, 0, 0);
-                        activeModelId = -1; // 重置选中的模型
-                        filterModels(modelSearch.value.toLowerCase().trim());
-
-                        if (model) {
-                            const box = new THREE.Box3().setFromObject(model);
-                            const center = box.getCenter(new THREE.Vector3());
-                            const size = box.getSize(new THREE.Vector3());
-                            const maxDim = Math.max(size.x, size.y, size.z);
-                            const fov = camera.fov * (Math.PI / 180);
-                            cameraDistance = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
-                            cameraTarget.copy(center);
-                        }
-
-                        updateCameraPosition();
-                        isOrbiting = false;
-                        orbitToggleElements.forEach(btn => {
-                            btn.classList.remove('bg-primary/20');
-                        });
-                    });
-                }
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
-
-            // 缩放控制 - 取消上下限
+            document.getElementById('cameraOrbitToggle').addEventListener('click', toggleOrbit);
+            document.getElementById('resetView').addEventListener('click', resetView);
             document.getElementById('zoomIn').addEventListener('click', () => {
-                cameraDistance = cameraDistance * 0.8;
+                cameraDistance = Math.max(10, cameraDistance - 10);
                 updateCameraPosition();
             });
-
             document.getElementById('zoomOut').addEventListener('click', () => {
-                cameraDistance = cameraDistance * 1.25;
+                cameraDistance = Math.min(500, cameraDistance + 10);
                 updateCameraPosition();
             });
-
-            // 线框模式切换
-            const wireframeElements = [
-                document.getElementById('wireframeToggle'),
-                document.getElementById('mobileWireframeToggle')
-            ];
-
-            wireframeElements.forEach(el => {
-                if (el) {
-                    el.addEventListener('click', () => {
-                        isWireframe = !isWireframe;
-                        wireframeElements.forEach(btn => {
-                            btn.classList.toggle('bg-primary/20', isWireframe);
-                        });
-
-                        if (model) {
-                            model.traverse(child => {
-                                if (child.isMesh && child.material) {
-                                    child.material.wireframe = isWireframe;
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            // 全屏控制
-            document.getElementById('fullscreenBtn').addEventListener('click', () => {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err =>
-                        console.error('全屏错误:', err)
-                    );
-                } else {
-                    document.exitFullscreen();
-                }
-            });
-
-            // 信息模态框
+            document.getElementById('wireframeToggle').addEventListener('click', toggleWireframe);
             document.getElementById('infoBtn').addEventListener('click', () => {
                 document.getElementById('infoModal').classList.remove('hidden');
                 setTimeout(() => {
-                    document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0');
+                    document.getElementById('modalContent').classList.add('scale-100', 'opacity-100');
                 }, 10);
             });
-
             document.getElementById('closeInfoBtn').addEventListener('click', () => {
-                const modal = document.getElementById('modalContent');
-                modal.classList.add('scale-95', 'opacity-0');
+                document.getElementById('modalContent').classList.remove('scale-100', 'opacity-100');
                 setTimeout(() => {
                     document.getElementById('infoModal').classList.add('hidden');
                 }, 300);
             });
-        }
-
-        function setupPropertyControls() {
-            // 旋转灵敏度
-            const rotationSensitivitySlider = document.getElementById('rotationSensitivity');
-            const rotationSensitivityValue = document.getElementById('rotationSensitivityValue');
-
-            rotationSensitivitySlider.addEventListener('input', (e) => {
+            document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+            document.getElementById('retryLoadResources').addEventListener('click', () => {
+                location.reload();
+            });
+            document.getElementById('mobileResetView').addEventListener('click', resetView);
+            document.getElementById('mobileOrbitToggle').addEventListener('click', toggleOrbit);
+            document.getElementById('mobileWireframeToggle').addEventListener('click', toggleWireframe);
+            document.getElementById('rotationSensitivity').addEventListener('input', (e) => {
                 rotationSensitivity = parseFloat(e.target.value);
-                rotationSensitivityValue.textContent = rotationSensitivity.toFixed(4);
+                document.getElementById('rotationSensitivityValue').textContent = rotationSensitivity.toFixed(4);
             });
-
-            // 平移灵敏度
-            const panSensitivitySlider = document.getElementById('panSensitivity');
-            const panSensitivityValue = document.getElementById('panSensitivityValue');
-
-            panSensitivitySlider.addEventListener('input', (e) => {
+            document.getElementById('panSensitivity').addEventListener('input', (e) => {
                 panSensitivity = parseFloat(e.target.value);
-                panSensitivityValue.textContent = panSensitivity.toFixed(2);
+                document.getElementById('panSensitivityValue').textContent = panSensitivity.toFixed(2);
             });
-
-            // 旋转速度
-            const orbitSpeedSlider = document.getElementById('orbitSpeed');
-            const orbitSpeedValue = document.getElementById('orbitSpeedValue');
-
-            orbitSpeedSlider.addEventListener('input', (e) => {
+            document.getElementById('orbitSpeed').addEventListener('input', (e) => {
                 rotationSpeed = parseFloat(e.target.value);
-                orbitSpeedValue.textContent = rotationSpeed.toFixed(3);
+                document.getElementById('orbitSpeedValue').textContent = rotationSpeed.toFixed(3);
             });
-
-            // 移动速度
-            const movementSpeedSlider = document.getElementById('movementSpeed');
-            const movementSpeedValue = document.getElementById('movementSpeedValue');
-
-            movementSpeedSlider.addEventListener('input', (e) => {
+            document.getElementById('movementSpeed').addEventListener('input', (e) => {
                 movementSpeed = parseFloat(e.target.value);
-                movementSpeedValue.textContent = movementSpeed.toFixed(1);
+                document.getElementById('movementSpeedValue').textContent = movementSpeed.toFixed(1);
             });
-
-            // 环境光强度
-            const ambientLightSlider = document.getElementById('ambientLight');
-            const ambientLightValue = document.getElementById('ambientLightValue');
-
-            ambientLightSlider.addEventListener('input', (e) => {
-                ambientLight.intensity = parseFloat(e.target.value);
-                ambientLightValue.textContent = ambientLight.intensity.toFixed(1);
+            document.getElementById('ambientLight').addEventListener('input', (e) => {
+                const intensity = parseFloat(e.target.value);
+                ambientLight.intensity = intensity;
+                document.getElementById('ambientLightValue').textContent = intensity.toFixed(1);
             });
-
-            // 方向光强度
-            const directionalLightSlider = document.getElementById('directionalLight');
-            const directionalLightValue = document.getElementById('directionalLightValue');
-
-            directionalLightSlider.addEventListener('input', (e) => {
-                directionalLight.intensity = parseFloat(e.target.value);
-                directionalLightValue.textContent = directionalLight.intensity.toFixed(1);
+            document.getElementById('directionalLight').addEventListener('input', (e) => {
+                const intensity = parseFloat(e.target.value);
+                directionalLight.intensity = intensity;
+                document.getElementById('directionalLightValue').textContent = intensity.toFixed(1);
             });
-
-            // 背景亮度
-            const backgroundBrightnessSlider = document.getElementById('backgroundBrightness');
-            const backgroundBrightnessValue = document.getElementById('backgroundBrightnessValue');
-
-            backgroundBrightnessSlider.addEventListener('input', (e) => {
-                const value = parseFloat(e.target.value);
-                backgroundBrightnessValue.textContent = value.toFixed(2);
-                const colorValue = Math.floor(45 + value * 100);
-                scene.background = new THREE.Color(`rgb(${colorValue}, ${colorValue}, ${colorValue + 15})`);
+            document.getElementById('backgroundBrightness').addEventListener('input', (e) => {
+                const brightness = parseFloat(e.target.value);
+                scene.background.setHSL(0.6, 0.2, brightness);
+                document.getElementById('backgroundBrightnessValue').textContent = brightness.toFixed(2);
             });
         }
-
-        // 更新相机位置 - 明确基于红轴(X)和蓝轴(Z)旋转
         function updateCameraPosition() {
-            if (!camera) return;
-
-            // 计算基于红轴(X)和蓝轴(Z)旋转的新位置
-            const x = Math.sin(rotationZ) * Math.cos(rotationX) * cameraDistance;
-            const y = Math.sin(rotationX) * cameraDistance;
-            const z = Math.cos(rotationZ) * Math.cos(rotationX) * cameraDistance;
-
-            camera.position.set(
-                cameraTarget.x + x,
-                cameraTarget.y + y,
-                cameraTarget.z + z
-            );
-
-            // 更新相机方向光源位置
-            if (cameraLight) {
-                cameraLight.position.copy(camera.position);
-            }
-
-            // 始终看向目标点
+            const x = cameraTarget.x + Math.sin(rotationZ) * cameraDistance;
+            const y = cameraTarget.y + Math.sin(rotationX) * cameraDistance;
+            const z = cameraTarget.z + Math.cos(rotationZ) * cameraDistance;
+            camera.position.set(x, y, z);
             camera.lookAt(cameraTarget);
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            if (isOrbiting) {
+                rotationZ -= rotationSpeed;
+                if (rotationZ < -2 * Math.PI) rotationZ += 2 * Math.PI;
+            }
+            updateCameraPosition();
             renderer.render(scene, camera);
         }
-
-        function panCamera(x, y, z) {
-            const forward = new THREE.Vector3();
-            camera.getWorldDirection(forward);
-            forward.y = 0; // 保持水平方向
-            forward.normalize();
-
-            const right = new THREE.Vector3().crossVectors(camera.up, forward);
-            right.normalize();
-
-            // 应用三个轴的平移
-            cameraTarget.add(right.multiplyScalar(x));  // X轴平移
-            cameraTarget.y += y;                       // Y轴平移
-            cameraTarget.add(forward.multiplyScalar(z));// Z轴平移
-
+        function toggleOrbit() {
+            isOrbiting = !isOrbiting;
+            document.getElementById('cameraOrbitToggle').classList.toggle('text-primary');
+            document.getElementById('mobileOrbitToggle').classList.toggle('text-primary');
+        }
+        function resetView() {
+            rotationX = 0;
+            rotationZ = 0;
+            cameraDistance = 100;
+            cameraTarget.set(0, 0, 0);
+            isOrbiting = false;
+            document.getElementById('cameraOrbitToggle').classList.remove('text-primary');
+            document.getElementById('mobileOrbitToggle').classList.remove('text-primary');
             updateCameraPosition();
         }
-
-        // 键盘控制 - 已交换w/s和a/d功能
-        function processKeyboardMovement() {
-            const moveDistance = movementSpeed * 0.1;
-
-            // WASD控制平移（已交换W/S和A/D功能）
-            if (keys.w) {
-                // W键：向前移动（原S键功能）
-                const forward = new THREE.Vector3();
-                camera.getWorldDirection(forward);
-                forward.y = 0;
-                forward.normalize();
-                panCamera(0, 0, moveDistance);
+        function toggleWireframe() {
+            isWireframe = !isWireframe;
+            if (model) {
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material.wireframe = isWireframe;
+                    }
+                });
             }
-            if (keys.s) {
-                // S键：向后移动（原W键功能）
-                const forward = new THREE.Vector3();
-                camera.getWorldDirection(forward);
-                forward.y = 0;
-                forward.normalize();
-                panCamera(0, 0, -moveDistance);
-            }
-            if (keys.a) {
-                // A键：向右移动（原D键功能）
-                const right = new THREE.Vector3();
-                camera.getWorldDirection(right);
-                right.cross(camera.up);
-                right.y = 0;
-                right.normalize();
-                panCamera(moveDistance, 0, 0);
-            }
-            if (keys.d) {
-                // D键：向左移动（原A键功能）
-                const right = new THREE.Vector3();
-                camera.getWorldDirection(right);
-                right.cross(camera.up);
-                right.y = 0;
-                right.normalize();
-                panCamera(-moveDistance, 0, 0);
-            }
-
-            // 上下键控制上下移动
-            if (keys.ArrowUp) {
-                panCamera(0, moveDistance, 0);
-            }
-            if (keys.ArrowDown) {
-                panCamera(0, -moveDistance, 0);
-            }
+            document.getElementById('wireframeToggle').classList.toggle('text-primary');
+            document.getElementById('mobileWireframeToggle').classList.toggle('text-primary');
         }
-
-        // 窗口大小调整
-        function onWindowResize() {
-            if (!camera || !renderer) return;
-
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // 加载模型
         function loadModel(url) {
-            if (!checkThreeJsLoaded()) return;
-
-            const loader = new THREE.GLTFLoader();
-
-            // 显示加载指示器
             loadingIndicator.classList.remove('hidden');
-            progressBar.style.width = '0%';
-
-            // 尝试加载模型
+            const loader = new THREE.GLTFLoader();
             loader.load(
                 url,
                 (gltf) => {
-                    // 移除旧模型
-                    if (model) {
-                        scene.remove(model);
-                    }
-
                     model = gltf.scene;
-
-                    // 识别模型中的所有子模型
-                    identifyModels(model);
-
-                    // 计算模型尺寸并居中
+                    scene.add(model);
                     const box = new THREE.Box3().setFromObject(model);
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z);
-
-                    // 调整相机位置以完整显示模型
-                    const fov = camera.fov * (Math.PI / 180);
-                    cameraDistance = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
                     cameraTarget.copy(center);
-
-                    // 重置旋转
-                    rotationX = 0;
-                    rotationZ = 0;
-
-                    // 应用线框模式设置
-                    model.traverse(child => {
-                        if (child.isMesh && child.material) {
-                            child.material.wireframe = isWireframe;
-                        }
-                    });
-
-                    scene.add(model);
+                    cameraDistance = maxDim * 2;
                     updateCameraPosition();
-
-                    // 隐藏加载指示器
-                    setTimeout(() => {
-                        loadingIndicator.classList.add('hidden');
-                        progressBar.style.width = '0%';
-                    }, 500);
-
-                    // 显示控制面板
-                    controlPanel.classList.remove('opacity-50', 'pointer-events-none');
-                    controlPanel.classList.add('opacity-100', 'pointer-events-auto');
+                    loadingIndicator.classList.add('hidden');
+                    extractModelsFromScene();
                 },
                 (xhr) => {
-                    // 更新加载进度
-                    const percent = (xhr.loaded / xhr.total) * 100;
-                    progressBar.style.width = percent + '%';
+                    const progress = (xhr.loaded / xhr.total) * 100;
+                    progressBar.style.width = `${progress}%`;
                 },
                 (error) => {
                     console.error('模型加载错误:', error);
-
-                    // 隐藏加载指示器
                     loadingIndicator.classList.add('hidden');
-                    progressBar.style.width = '0%';
-
-                    // 显示错误信息（替代原上传提示）
-                    alert('无法加载模型文件');
+                    alert('模型加载失败，请检查模型文件是否存在或格式是否正确');
                 }
             );
         }
-
-
-        // 动画循环
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // 处理键盘移动
-            processKeyboardMovement();
-
-            // 自动旋转 - 围绕蓝轴(Z轴)
-            if (isOrbiting) {
-                rotationZ += rotationSpeed;
+        function extractModelsFromScene() {
+            models = [];
+            let modelCounter = 0;
+            scene.traverse((object) => {
+                if (object.isMesh) {
+                    models.push({
+                        id: modelCounter++,
+                        name: object.name || `模型_${modelCounter}`,
+                        object: object
+                    });
+                }
+            });
+            filterModels('');
+        }
+        function moveToModel(modelId) {
+            const model = models.find(m => m.id === modelId);
+            if (model) {
+                activeModelId = modelId;
+                cameraTarget.copy(model.object.position);
+                cameraDistance = 50;
+                isOrbiting = false;
+                document.getElementById('cameraOrbitToggle').classList.remove('text-primary');
+                document.getElementById('mobileOrbitToggle').classList.remove('text-primary');
                 updateCameraPosition();
-            }
-
-            // 渲染场景
-            if (renderer && scene && camera) {
-                renderer.render(scene, camera);
+                filterModels(modelSearch.value);
             }
         }
-
-        // 重新加载资源按钮事件
-        document.getElementById('retryLoadResources').addEventListener('click', () => {
-            document.getElementById('resourceError').classList.add('hidden');
-            document.getElementById('initialLoading').classList.remove('hidden');
-            setTimeout(initApplication, 500);
-        });
-
-        // 初始化应用
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`进入全屏失败: ${err.message}`);
+                });
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-compress text-light"></i>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-expand text-light"></i>';
+            }
+        }
         window.addEventListener('load', initApplication);
     </script>
 </body>
