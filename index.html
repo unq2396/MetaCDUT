@@ -8,9 +8,11 @@
     <title>Meta CDUT - 3D查看器</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./GLTFLoader.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -28,92 +30,119 @@
             }
         }
     </script>
+
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
+
             .backdrop-blur {
                 backdrop-filter: blur(8px);
             }
+
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             }
+
             .control-btn {
                 @apply p-3 rounded-full transition transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
+
             .axis-btn {
                 @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
+
             .panel {
                 @apply bg-dark/70 backdrop-blur border border-white/10 rounded-xl transition transition-all duration-300;
             }
+
             .mobile-control {
                 @apply fixed w-14 h-14 rounded-full bg-dark/60 backdrop-blur flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90;
             }
+
             input[type="range"] {
                 @apply appearance-none w-full h-2 bg-white/20 rounded-full outline-none;
             }
+
                 input[type="range"]::-webkit-slider-thumb {
                     @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer;
                 }
+
                 input[type="range"]::-moz-range-thumb {
                     @apply w-4 h-4 bg-primary rounded-full cursor-pointer border-none;
                 }
+
             .slider-value {
                 @apply text-xs text-light/60 mt-1 flex justify-between;
             }
+
             .touch-hint {
                 @apply fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark/70 backdrop-blur px-4 py-2 rounded-full text-sm z-30 hidden md:block;
             }
+
             .building-list-item {
                 @apply p-2 rounded-lg hover:bg-primary/20 cursor-pointer transition-all duration-200 text-sm;
             }
+
                 .building-list-item.active {
                     @apply bg-primary/30;
                 }
+
             .search-container {
                 @apply relative w-full mb-4;
             }
+
             .search-results {
                 @apply relative w-full max-h-60 overflow-y-auto;
             }
+
             .search-result-item {
                 @apply p-2 hover:bg-primary/20 cursor-pointer transition-all text-sm;
             }
+
             @media (max-width: 768px) {
                 #propertiesPanel, #buildingsPanel {
                     width: 240px !important;
                     padding: 0.75rem !important;
                 }
+
                     #propertiesPanel h3, #buildingsPanel h3 {
                         font-size: 1rem !important;
                         margin-bottom: 0.75rem !important;
                     }
+
                     #propertiesPanel .space-y-4 > div {
                         margin-bottom: 0.75rem !important;
                     }
+
                     #propertiesPanel label {
                         font-size: 0.75rem !important;
                     }
+
                 #modalContent {
                     max-width: 280px !important;
                     padding: 1rem !important;
                 }
+
                     #modalContent h2 {
                         font-size: 1.25rem !important;
                     }
+
                     #modalContent p, #modalContent li {
                         font-size: 0.85rem !important;
                     }
+
                 #mobileResetView {
                     bottom: 60px !important;
                     left: 16px !important;
                 }
+
                 #mobileOrbitToggle {
                     bottom: 16px !important;
                     left: 16px !important;
                 }
+
                 #mobileWireframeToggle {
                     top: 80px !important;
                     right: 16px !important;
@@ -129,6 +158,7 @@
                 <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary text-shadow">Meta CDUT</h1>
                 <span class="text-xs text-light/60 ml-1">Developed by unq</span>
             </div>
+
             <div class="flex items-center space-x-4 w-full md:w-auto justify-end">
                 <button id="infoBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
                     <i class="fa fa-info text-light"></i>
@@ -145,14 +175,17 @@
             </div>
         </div>
     </header>
+
     <main class="relative h-full w-full">
         <canvas id="viewerCanvas" class="w-full h-full"></canvas>
+
         <div id="initialLoading" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 <p id="loadingStatus" class="mt-4 text-lg">初始化3D环境中...</p>
             </div>
         </div>
+
         <div id="resourceError" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50 hidden">
             <div class="text-center p-6 panel max-w-md">
                 <i class="fa fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
@@ -163,6 +196,7 @@
                 </button>
             </div>
         </div>
+
         <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-40 transition-opacity duration-500 hidden">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -172,6 +206,7 @@
                 </div>
             </div>
         </div>
+
         <div class="fixed:hidden">
             <button id="mobileResetView" class="mobile-control bottom-6 left-6" title="重置视图">
                 <i class="fa fa-home text-light text-xl"></i>
@@ -183,10 +218,13 @@
                 <i class="fa fa-cubes text-light text-xl"></i>
             </button>
         </div>
+
         <div class="touch-hint">
             <span>单指拖动旋转 | 双指拖动平移 | 双指捏合缩放</span>
         </div>
+
     </main>
+
     <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 panel px-4 py-2 flex items items-center space-x-6 z-40 opacity-50 pointer-events-events-none transition-all duration-300 hidden md:flex" id="controlPanel">
         <button id="cameraOrbitToggle" class="control-btn" title="切换自动旋转">
             <i class="fa fa-refresh text-light"></i>
@@ -204,10 +242,12 @@
             <i class="fa fa-cubes text-light"></i>
         </button>
     </div>
+
     <div id="propertiesPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden md-hidden md:block opacity-100 pointer-events-events-auto transition-all duration-300 z-40">
         <h3 class="font-bold text-primary mb-4 flex items-center">
             <i class="fa fa-sliders mr-2"></i>属性控制
         </h3>
+
         <div class="space-y-4">
             <div>
                 <label class="block text-sm mb-1 text-light/80">旋转灵敏度</label>
@@ -218,6 +258,7 @@
                     <span>范围: 0.001-0.01</span>
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm mb-1 text-light/80">拖拽平移灵敏度</label>
                 <input id="panSensitivity" type="range" min="0.05" max="1.5" step="0.01" value="0.1"
@@ -227,8 +268,9 @@
                     <span>范围: 0.05-1.5</span>
                 </div>
             </div>
+
             <div>
-                <label class="block text-sm mb-1 text-light/80">旋转速度</label>
+                <label class="block text-sm mb-1 text-light/80">旋转速度（绕蓝轴Z）</label>
                 <input id="orbitSpeed" type="range" min="0.001" max="0.02" step="0.001" value="0.01"
                        class="w-full accent-primary">
                 <div class="slider-value">
@@ -236,6 +278,7 @@
                     <span>范围: 0.001-0.02</span>
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm mb-1 text-light/80">移动速度</label>
                 <input id="movementSpeed" type="range" min="0.1" max="5" step="0.1" value="1"
@@ -245,6 +288,7 @@
                     <span>范围: 0.1-5</span>
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm mb-1 text-light/80">环境光强度</label>
                 <input id="ambientLight" type="range" min="0" max="5" step="0.1" value="1.2"
@@ -254,6 +298,7 @@
                     <span>范围: 0-5</span>
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm mb-1 text-light/80">方向光强度</label>
                 <input id="directionalLight" type="range" min="0" max="5" step="0.1" value="1.5"
@@ -263,6 +308,7 @@
                     <span>范围: 0-5</span>
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm mb-1 text-light/80">背景亮度</label>
                 <input id="backgroundBrightness" type="range" min="0" max="1" step="0.05" value="0.4"
@@ -274,18 +320,22 @@
             </div>
         </div>
     </div>
+
     <div id="buildingsPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden opacity-0 pointer-events-none transition-all duration-300 z-40">
         <h3 class="font-bold text-primary mb-4 flex items-center">
             <i class="fa fa-cubes mr-2"></i>模型列表
         </h3>
+
         <div class="search-container">
             <input type="text" id="buildingSearch" placeholder="搜索模型..."
                    class="w-full bg-dark/50 border border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
         </div>
+
         <div id="buildingsList" class="search-results">
             <div class="text-light/60 text-sm text-center py-4">加载模型中...</div>
         </div>
     </div>
+
     <div id="infoModal" class="fixed inset-0 bg-black/60 backdrop-blur z-50 flex items-center justify-center hidden">
         <div class="panel p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
             <div class="flex justify-between items-center mb-4">
@@ -295,7 +345,8 @@
                 </button>
             </div>
             <div class="space-y-4">
-                <p class="text-light/80">此查看器用于展示成都理工大学三维重建模型</p>
+                <p class="text-light/80">此查看器用于展示CDUT三维重建模型</p>
+
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">桌面端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -307,6 +358,7 @@
                         <li><i class="fa fa-keyboard-o mr-2 text-primary"></i> 上下键 - 摄像机上下移动</li>
                     </ul>
                 </div>
+
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">移动端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -316,6 +368,7 @@
                         <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 双击 - 设置旋转中心</li>
                     </ul>
                 </div>
+
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">通用控制：</h3>
                     <ul class="space-y-1 text-light/80">
@@ -328,6 +381,7 @@
             </div>
         </div>
     </div>
+
     <script>
         let scene, camera, renderer, controls, model;
         let ambientLight, directionalLight, cameraLight;
@@ -342,10 +396,13 @@
         let isLeftDragging = false;
         let isMiddleDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
+
         let models = [];
         let activeModelId = -1;
+
         let rotationSensitivity = 0.005;
         let panSensitivity = 0.1;
+
         let touchStart = {
             touches: 0,
             distance: 0,
@@ -353,10 +410,12 @@
             rotation: { x: 0, z: 0 },
             distance: 0
         };
+
         const keys = {
             w: false, a: false, s: false, d: false,
             ArrowUp: false, ArrowDown: false
         };
+
         const canvas = document.getElementById('viewerCanvas');
         const initialLoading = document.getElementById('initialLoading');
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -367,6 +426,7 @@
         const modelsPanel = document.getElementById('buildingsPanel');
         const modelsList = document.getElementById('buildingsList');
         const modelSearch = document.getElementById('buildingSearch');
+
         function checkThreeJsLoaded() {
             if (typeof THREE === 'undefined') {
                 document.getElementById('initialLoading').classList.add('hidden');
@@ -375,49 +435,64 @@
             }
             return true;
         }
+
         function initApplication() {
             console.log('初始化应用程序');
+
             if (!checkThreeJsLoaded()) return;
+
             setTimeout(() => {
                 document.getElementById('initialLoading').classList.add('hidden');
+
                 loadModel('https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb');
+
                 showPropertiesPanel();
             }, 500);
+
             initScene();
+
             setupSearchFunctionality();
+
             document.getElementById('togglePropertiesBtn').addEventListener('click', () => {
                 togglePropertiesPanel();
                 if (modelsPanel.classList.contains('opacity-100')) {
                     hideModelsPanel();
                 }
             });
+
             document.getElementById('toggleBuildingsBtn').addEventListener('click', () => {
                 toggleModelsPanel();
                 if (propertiesPanel.classList.contains('opacity-100')) {
                     hidePropertiesPanel();
                 }
             });
+
             if (window.innerWidth < 768) {
                 hidePropertiesPanel();
                 hideModelsPanel();
+
                 const mobileSliderButton = document.getElementById('togglePropertiesBtn');
                 if (mobileSliderButton) {
                     mobileSliderButton.style.display = 'flex';
                 }
+
                 const mobileModelsButton = document.getElementById('toggleBuildingsBtn');
                 if (mobileModelsButton) {
                     mobileModelsButton.style.display = 'flex';
                 }
             }
         }
+
         function showPropertiesPanel() {
             propertiesPanel.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
             propertiesPanel.classList.add('opacity-100', 'pointer-events-auto');
         }
+
         function hidePropertiesPanel() {
             propertiesPanel.classList.add('opacity-0', 'pointer-events-none');
             propertiesPanel.classList.remove('opacity-100', 'pointer-events-auto');
         }
+
         function togglePropertiesPanel() {
             if (propertiesPanel.classList.contains('opacity-100')) {
                 hidePropertiesPanel();
@@ -425,14 +500,17 @@
                 showPropertiesPanel();
             }
         }
+
         function showModelsPanel() {
             modelsPanel.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
             modelsPanel.classList.add('opacity-100', 'pointer-events-auto');
         }
+
         function hideModelsPanel() {
             modelsPanel.classList.add('opacity-0', 'pointer-events-none');
             modelsPanel.classList.remove('opacity-100', 'pointer-events-auto');
         }
+
         function toggleModelsPanel() {
             if (modelsPanel.classList.contains('opacity-100')) {
                 hideModelsPanel();
@@ -440,15 +518,19 @@
                 showModelsPanel();
             }
         }
+
         function setupSearchFunctionality() {
             modelSearch.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 filterModels(searchTerm);
             });
+
             filterModels('');
         }
+
         function filterModels(searchTerm) {
             modelsList.innerHTML = '';
+
             if (models.length === 0) {
                 const noModelMsg = document.createElement('div');
                 noModelMsg.className = 'text-light/60 text-sm text-center py-4';
@@ -456,22 +538,27 @@
                 modelsList.appendChild(noModelMsg);
                 return;
             }
+
             let filteredModels = models;
             if (searchTerm.length > 0) {
                 filteredModels = models.filter(model =>
                     model.name.toLowerCase().includes(searchTerm)
                 );
             }
+
             if (filteredModels.length > 0) {
                 filteredModels.sort((a, b) => a.name.localeCompare(b.name));
+
                 filteredModels.forEach(model => {
                     const listItem = document.createElement('div');
                     listItem.className = `building-list-item ${activeModelId === model.id ? 'active' : ''}`;
                     listItem.textContent = model.name;
                     listItem.dataset.modelId = model.id;
+
                     listItem.addEventListener('click', () => {
                         moveToModel(model.id);
                     });
+
                     modelsList.appendChild(listItem);
                 });
             } else {
@@ -481,18 +568,25 @@
                 modelsList.appendChild(noResult);
             }
         }
+
         function initScene() {
             console.log('初始化3D场景');
+
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x3D4758);
+
             ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
             scene.add(ambientLight);
+
             directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
             directionalLight.position.set(10, 20, 15);
             scene.add(directionalLight);
+
             cameraLight = new THREE.PointLight(0xffffff, 1.0, 1000);
             scene.add(cameraLight);
+
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+
             renderer = new THREE.WebGLRenderer({
                 canvas: canvas,
                 antialias: true,
@@ -502,30 +596,40 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.5;
+
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enabled = false;
+
             updateCameraPosition();
+
             canvas.style.position = 'relative';
             canvas.style.zIndex = '10';
+
             setupEventListeners();
+
             animate();
         }
+
         function getDistance(touch1, touch2) {
             const dx = touch2.clientX - touch1.clientX;
             const dy = touch2.clientY - touch1.clientY;
             return Math.sqrt(dx * dx + dy * dy);
         }
+
         function getCenter(touch1, touch2) {
             return {
                 x: (touch1.clientX + touch2.clientX) / 2,
                 y: (touch1.clientY + touch2.clientY) / 2
             };
         }
+
         function setupEventListeners() {
             console.log('设置事件监听器');
             const canvasElement = document.getElementById('viewerCanvas');
+
             canvasElement.tabIndex = 1;
             canvasElement.style.touchAction = 'none';
+
             document.addEventListener('mousedown', (event) => {
                 if (event.target === canvasElement) {
                     if (event.button === 0) {
@@ -548,296 +652,612 @@
                     event.preventDefault();
                     event.stopPropagation();
                 }
-            });
+            }, true);
+
             document.addEventListener('mousemove', (event) => {
-                if (!isLeftDragging && !isMiddleDragging) return;
-                const deltaX = event.clientX - previousMousePosition.x;
-                const deltaY = event.clientY - previousMousePosition.y;
-                if (isLeftDragging) {
+                if (isLeftDragging && !isOrbiting) {
+                    const deltaX = event.clientX - previousMousePosition.x;
+                    const deltaY = event.clientY - previousMousePosition.y;
+
                     rotationZ -= deltaX * rotationSensitivity;
-                    rotationX -= deltaY * rotationSensitivity;
-                    rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+                    rotationX += deltaY * rotationSensitivity;
+
+                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
+
+                    updateCameraPosition();
+
+                    previousMousePosition = {
+                        x: event.clientX,
+                        y: event.clientY
+                    };
+
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                if (isMiddleDragging) {
-                    const moveX = deltaX * panSensitivity * 0.1;
-                    const moveY = deltaY * panSensitivity * 0.1;
-                    cameraTarget.x += moveX;
-                    cameraTarget.y -= moveY;
+                else if (isMiddleDragging) {
+                    const deltaX = event.clientX - previousMousePosition.x;
+                    const deltaY = event.clientY - previousMousePosition.y;
+
+                    const panX = deltaX * (movementSpeed * panSensitivity);
+                    const panZ = deltaY * (movementSpeed * panSensitivity);
+
+                    panCamera(panX, 0, panZ);
+
+                    previousMousePosition = {
+                        x: event.clientX,
+                        y: event.clientY
+                    };
+
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                previousMousePosition = {
-                    x: event.clientX,
-                    y: event.clientY
-                };
-                event.preventDefault();
-                event.stopPropagation();
-            });
+            }, true);
+
             document.addEventListener('mouseup', (event) => {
-                if (event.button === 0) {
+                if (event.button === 0 && isLeftDragging) {
+                    console.log('左键释放 - 结束旋转');
                     isLeftDragging = false;
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                if (event.button === 1) {
+                else if (event.button === 1 && isMiddleDragging) {
+                    console.log('中键释放 - 结束平移');
                     isMiddleDragging = false;
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                event.preventDefault();
-                event.stopPropagation();
-            });
-            canvasElement.addEventListener('wheel', (event) => {
-                event.preventDefault();
-                const delta = Math.max(-1, Math.min(1, event.deltaY));
-                cameraDistance += delta * movementSpeed * 2;
-                cameraDistance = Math.max(10, Math.min(500, cameraDistance));
-                updateCameraPosition();
-            }, { passive: false });
-            canvasElement.addEventListener('dblclick', (event) => {
-                const rect = canvasElement.getBoundingClientRect();
-                const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-                const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-                const raycaster = new THREE.Raycaster();
-                raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
-                const intersects = raycaster.intersectObjects(scene.children, true);
-                if (intersects.length > 0) {
-                    cameraTarget.copy(intersects[0].point);
-                }
-            });
+            }, true);
+
             canvasElement.addEventListener('touchstart', (event) => {
                 event.preventDefault();
-                touchStart.touches = event.touches.length;
-                if (event.touches.length === 1) {
-                    touchStart.center = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+                const touches = event.touches;
+
+                if (touches.length === 1) {
+                    touchStart.touches = 1;
+                    touchStart.center = {
+                        x: touches[0].clientX,
+                        y: touches[0].clientY
+                    };
                     touchStart.rotation = { x: rotationX, z: rotationZ };
-                    isLeftDragging = true;
-                } else if (event.touches.length === 2) {
-                    touchStart.center = getCenter(event.touches[0], event.touches[1]);
-                    touchStart.distance = getDistance(event.touches[0], event.touches[1]);
-                    isMiddleDragging = true;
                 }
-            });
+                else if (touches.length === 2) {
+                    touchStart.touches = 2;
+                    touchStart.distance = getDistance(touches[0], touches[1]);
+                    touchStart.center = getCenter(touches[0], touches[1]);
+                    touchStart.previousCenter = { ...touchStart.center };
+                    touchStart.initialDistance = cameraDistance;
+                }
+            }, { passive: false });
+
             canvasElement.addEventListener('touchmove', (event) => {
                 event.preventDefault();
-                if (event.touches.length !== touchStart.touches) {
-                    touchStart.touches = event.touches.length;
-                    return;
+                const touches = event.touches;
+
+                if (touches.length === 1 && touchStart.touches === 1) {
+                    const currentCenter = {
+                        x: touches[0].clientX,
+                        y: touches[0].clientY
+                    };
+
+                    const deltaX = currentCenter.x - touchStart.center.x;
+                    const deltaY = currentCenter.y - touchStart.center.y;
+
+                    rotationZ = touchStart.rotation.z - deltaX * rotationSensitivity;
+                    rotationX = touchStart.rotation.x + deltaY * rotationSensitivity;
+
+                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
+
+                    updateCameraPosition();
                 }
-                if (event.touches.length === 1 && isLeftDragging) {
-                    const deltaX = event.touches[0].clientX - touchStart.center.x;
-                    const deltaY = event.touches[0].clientY - touchStart.center.y;
-                    rotationZ -= deltaX * rotationSensitivity * 0.5;
-                    rotationX -= deltaY * rotationSensitivity * 0.5;
-                    rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
-                } else if (event.touches.length === 2 && isMiddleDragging) {
-                    const currentCenter = getCenter(event.touches[0], event.touches[1]);
-                    const currentDistance = getDistance(event.touches[0], event.touches[1]);
-                    const moveX = (currentCenter.x - touchStart.center.x) * panSensitivity * 0.01;
-                    const moveY = (currentCenter.y - touchStart.center.y) * panSensitivity * 0.01;
-                    cameraTarget.x += moveX;
-                    cameraTarget.y -= moveY;
+                else if (touches.length === 2 && touchStart.touches === 2) {
+                    const currentDistance = getDistance(touches[0], touches[1]);
+                    const currentCenter = getCenter(touches[0], touches[1]);
+
                     const scale = currentDistance / touchStart.distance;
-                    cameraDistance *= scale;
-                    cameraDistance = Math.max(10, Math.min(500, cameraDistance));
-                    touchStart.center = currentCenter;
-                    touchStart.distance = currentDistance;
+                    cameraDistance = touchStart.initialDistance / scale;
+
+                    const deltaX = currentCenter.x - touchStart.previousCenter.x;
+                    const deltaY = currentCenter.y - touchStart.previousCenter.y;
+
+                    const panX = deltaX * (movementSpeed * panSensitivity * 0.5);
+                    const panY = deltaY * (movementSpeed * panSensitivity * 0.5);
+
+                    panCamera(panX, panY, 0);
+
+                    touchStart.previousCenter = { ...currentCenter };
+
+                    updateCameraPosition();
                 }
-            });
+            }, { passive: false });
+
             canvasElement.addEventListener('touchend', (event) => {
-                isLeftDragging = false;
-                isMiddleDragging = false;
                 touchStart.touches = 0;
             });
-            window.addEventListener('keydown', (event) => {
-                if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-                    keys[event.key] = true;
-                    event.preventDefault();
+
+            canvasElement.addEventListener('contextmenu', (event) => {
+                event.preventDefault();
+                return false;
+            });
+
+            canvasElement.addEventListener('wheel', (event) => {
+                event.preventDefault();
+
+                if (event.deltaY < 0) {
+                    cameraDistance = cameraDistance * 0.95;
+                } else {
+                    cameraDistance = cameraDistance * 1.05;
+                }
+
+                updateCameraPosition();
+            });
+
+            canvasElement.addEventListener('dblclick', (event) => {
+                if (!model) return;
+
+                const rect = canvasElement.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (event.type === 'dblclick' && event.touches) {
+                    clientX = event.touches[0].clientX;
+                    clientY = event.touches[0].clientY;
+                } else {
+                    clientX = event.clientX;
+                    clientY = event.clientY;
+                }
+
+                const mouse = new THREE.Vector2();
+                mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObject(model, true);
+
+                if (intersects.length > 0) {
+                    const newCenter = intersects[0].point;
+                    updateCameraTarget(newCenter);
                 }
             });
-            window.addEventListener('keyup', (event) => {
-                if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-                    keys[event.key] = false;
-                    event.preventDefault();
+
+            window.addEventListener('keydown', (e) => {
+                if (keys.hasOwnProperty(e.key)) {
+                    keys[e.key] = true;
                 }
             });
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+
+            window.addEventListener('keyup', (e) => {
+                if (keys.hasOwnProperty(e.key)) {
+                    keys[e.key] = false;
+                }
             });
-            document.getElementById('cameraOrbitToggle').addEventListener('click', toggleOrbit);
-            document.getElementById('resetView').addEventListener('click', resetView);
+
+            window.addEventListener('resize', onWindowResize);
+
+            setupControlPanelEvents();
+
+            setupPropertyControls();
+        }
+
+        function identifyModels(model) {
+            models = [];
+            let modelId = 0;
+
+            model.traverse(child => {
+                if (child.isMesh) {
+                    const box = new THREE.Box3().setFromObject(child);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+
+                    let modelName = child.name || `模型 ${modelId + 1}`;
+                    modelName = modelName.replace(/_/g, ' ');
+
+                    models.push({
+                        id: modelId,
+                        name: modelName,
+                        object: child,
+                        position: center,
+                        size: size,
+                        height: size.y,
+                        viewDistance: Math.max(size.x, size.y, size.z) * 2
+                    });
+
+                    modelId++;
+                }
+            });
+
+            if (models.length === 0 && model.isObject3D) {
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+
+                models.push({
+                    id: 0,
+                    name: "主模型",
+                    object: model,
+                    position: center,
+                    size: size,
+                    height: size.y,
+                    viewDistance: Math.max(size.x, size.y, size.z) * 2
+                });
+            }
+
+            console.log(`识别到 ${models.length} 个模型`);
+            filterModels(modelSearch.value.toLowerCase().trim());
+        }
+
+        function moveToModel(modelId) {
+            const model = models.find(m => m.id === modelId);
+            if (!model) return;
+
+            activeModelId = modelId;
+            filterModels(modelSearch.value.toLowerCase().trim());
+
+            isOrbiting = false;
+            document.getElementById('cameraOrbitToggle').classList.remove('bg-primary/20');
+            document.getElementById('mobileOrbitToggle').classList.remove('bg-primary/20');
+
+            cameraTarget.copy(model.position);
+
+            cameraDistance = model.viewDistance;
+
+            rotationX = Math.PI * 0.15;
+            rotationZ = Math.PI * 0.25;
+
+            updateCameraPosition();
+
+            if (window.innerWidth < 768) {
+                hideModelsPanel();
+            }
+        }
+
+        function updateCameraTarget(newTarget) {
+            cameraTarget.copy(newTarget);
+            updateCameraPosition();
+        }
+
+        function setupControlPanelEvents() {
+            const orbitToggleElements = [
+                document.getElementById('cameraOrbitToggle'),
+                document.getElementById('mobileOrbitToggle')
+            ];
+
+            orbitToggleElements.forEach(el => {
+                if (el) {
+                    el.addEventListener('click', () => {
+                        isOrbiting = !isOrbiting;
+                        orbitToggleElements.forEach(btn => {
+                            btn.classList.toggle('bg-primary/20', isOrbiting);
+                        });
+                    });
+                }
+            });
+
+            const resetViewElements = [
+                document.getElementById('resetView'),
+                document.getElementById('mobileResetView')
+            ];
+
+            resetViewElements.forEach(el => {
+                if (el) {
+                    el.addEventListener('click', () => {
+                        cameraDistance = 100;
+                        rotationX = 0;
+                        rotationZ = 0;
+                        cameraTarget.set(0, 0, 0);
+                        activeModelId = -1;
+                        filterModels(modelSearch.value.toLowerCase().trim());
+
+                        if (model) {
+                            const box = new THREE.Box3().setFromObject(model);
+                            const center = box.getCenter(new THREE.Vector3());
+                            const size = box.getSize(new THREE.Vector3());
+                            const maxDim = Math.max(size.x, size.y, size.z);
+                            const fov = camera.fov * (Math.PI / 180);
+                            cameraDistance = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
+                            cameraTarget.copy(center);
+                        }
+
+                        updateCameraPosition();
+                        isOrbiting = false;
+                        orbitToggleElements.forEach(btn => {
+                            btn.classList.remove('bg-primary/20');
+                        });
+                    });
+                }
+            });
+
             document.getElementById('zoomIn').addEventListener('click', () => {
-                cameraDistance = Math.max(10, cameraDistance - 10);
+                cameraDistance = cameraDistance * 0.8;
                 updateCameraPosition();
             });
+
             document.getElementById('zoomOut').addEventListener('click', () => {
-                cameraDistance = Math.min(500, cameraDistance + 10);
+                cameraDistance = cameraDistance * 1.25;
                 updateCameraPosition();
             });
-            document.getElementById('wireframeToggle').addEventListener('click', toggleWireframe);
+
+            const wireframeElements = [
+                document.getElementById('wireframeToggle'),
+                document.getElementById('mobileWireframeToggle')
+            ];
+
+            wireframeElements.forEach(el => {
+                if (el) {
+                    el.addEventListener('click', () => {
+                        isWireframe = !isWireframe;
+                        wireframeElements.forEach(btn => {
+                            btn.classList.toggle('bg-primary/20', isWireframe);
+                        });
+
+                        if (model) {
+                            model.traverse(child => {
+                                if (child.isMesh && child.material) {
+                                    child.material.wireframe = isWireframe;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            document.getElementById('fullscreenBtn').addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err =>
+                        console.error('全屏错误:', err)
+                    );
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
             document.getElementById('infoBtn').addEventListener('click', () => {
                 document.getElementById('infoModal').classList.remove('hidden');
                 setTimeout(() => {
-                    document.getElementById('modalContent').classList.add('scale-100', 'opacity-100');
+                    document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0');
                 }, 10);
             });
+
             document.getElementById('closeInfoBtn').addEventListener('click', () => {
-                document.getElementById('modalContent').classList.remove('scale-100', 'opacity-100');
+                const modal = document.getElementById('modalContent');
+                modal.classList.add('scale-95', 'opacity-0');
                 setTimeout(() => {
                     document.getElementById('infoModal').classList.add('hidden');
                 }, 300);
             });
-            document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
-            document.getElementById('retryLoadResources').addEventListener('click', () => {
-                location.reload();
-            });
-            document.getElementById('mobileResetView').addEventListener('click', resetView);
-            document.getElementById('mobileOrbitToggle').addEventListener('click', toggleOrbit);
-            document.getElementById('mobileWireframeToggle').addEventListener('click', toggleWireframe);
-            document.getElementById('rotationSensitivity').addEventListener('input', (e) => {
+        }
+
+        function setupPropertyControls() {
+            const rotationSensitivitySlider = document.getElementById('rotationSensitivity');
+            const rotationSensitivityValue = document.getElementById('rotationSensitivityValue');
+
+            rotationSensitivitySlider.addEventListener('input', (e) => {
                 rotationSensitivity = parseFloat(e.target.value);
-                document.getElementById('rotationSensitivityValue').textContent = rotationSensitivity.toFixed(4);
+                rotationSensitivityValue.textContent = rotationSensitivity.toFixed(4);
             });
-            document.getElementById('panSensitivity').addEventListener('input', (e) => {
+
+            const panSensitivitySlider = document.getElementById('panSensitivity');
+            const panSensitivityValue = document.getElementById('panSensitivityValue');
+
+            panSensitivitySlider.addEventListener('input', (e) => {
                 panSensitivity = parseFloat(e.target.value);
-                document.getElementById('panSensitivityValue').textContent = panSensitivity.toFixed(2);
+                panSensitivityValue.textContent = panSensitivity.toFixed(2);
             });
-            document.getElementById('orbitSpeed').addEventListener('input', (e) => {
+
+            const orbitSpeedSlider = document.getElementById('orbitSpeed');
+            const orbitSpeedValue = document.getElementById('orbitSpeedValue');
+
+            orbitSpeedSlider.addEventListener('input', (e) => {
                 rotationSpeed = parseFloat(e.target.value);
-                document.getElementById('orbitSpeedValue').textContent = rotationSpeed.toFixed(3);
+                orbitSpeedValue.textContent = rotationSpeed.toFixed(3);
             });
-            document.getElementById('movementSpeed').addEventListener('input', (e) => {
+
+            const movementSpeedSlider = document.getElementById('movementSpeed');
+            const movementSpeedValue = document.getElementById('movementSpeedValue');
+
+            movementSpeedSlider.addEventListener('input', (e) => {
                 movementSpeed = parseFloat(e.target.value);
-                document.getElementById('movementSpeedValue').textContent = movementSpeed.toFixed(1);
+                movementSpeedValue.textContent = movementSpeed.toFixed(1);
             });
-            document.getElementById('ambientLight').addEventListener('input', (e) => {
-                const intensity = parseFloat(e.target.value);
-                ambientLight.intensity = intensity;
-                document.getElementById('ambientLightValue').textContent = intensity.toFixed(1);
+
+            const ambientLightSlider = document.getElementById('ambientLight');
+            const ambientLightValue = document.getElementById('ambientLightValue');
+
+            ambientLightSlider.addEventListener('input', (e) => {
+                ambientLight.intensity = parseFloat(e.target.value);
+                ambientLightValue.textContent = ambientLight.intensity.toFixed(1);
             });
-            document.getElementById('directionalLight').addEventListener('input', (e) => {
-                const intensity = parseFloat(e.target.value);
-                directionalLight.intensity = intensity;
-                document.getElementById('directionalLightValue').textContent = intensity.toFixed(1);
+
+            const directionalLightSlider = document.getElementById('directionalLight');
+            const directionalLightValue = document.getElementById('directionalLightValue');
+
+            directionalLightSlider.addEventListener('input', (e) => {
+                directionalLight.intensity = parseFloat(e.target.value);
+                directionalLightValue.textContent = directionalLight.intensity.toFixed(1);
             });
-            document.getElementById('backgroundBrightness').addEventListener('input', (e) => {
-                const brightness = parseFloat(e.target.value);
-                scene.background.setHSL(0.6, 0.2, brightness);
-                document.getElementById('backgroundBrightnessValue').textContent = brightness.toFixed(2);
+
+            const backgroundBrightnessSlider = document.getElementById('backgroundBrightness');
+            const backgroundBrightnessValue = document.getElementById('backgroundBrightnessValue');
+
+            backgroundBrightnessSlider.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                backgroundBrightnessValue.textContent = value.toFixed(2);
+                const colorValue = Math.floor(45 + value * 100);
+                scene.background = new THREE.Color(`rgb(${colorValue}, ${colorValue}, ${colorValue + 15})`);
             });
         }
+
         function updateCameraPosition() {
-            const x = cameraTarget.x + Math.sin(rotationZ) * cameraDistance;
-            const y = cameraTarget.y + Math.sin(rotationX) * cameraDistance;
-            const z = cameraTarget.z + Math.cos(rotationZ) * cameraDistance;
-            camera.position.set(x, y, z);
-            camera.lookAt(cameraTarget);
-        }
-        function animate() {
-            requestAnimationFrame(animate);
-            if (isOrbiting) {
-                rotationZ -= rotationSpeed;
-                if (rotationZ < -2 * Math.PI) rotationZ += 2 * Math.PI;
+            if (!camera) return;
+
+            const x = Math.sin(rotationZ) * Math.cos(rotationX) * cameraDistance;
+            const y = Math.sin(rotationX) * cameraDistance;
+            const z = Math.cos(rotationZ) * Math.cos(rotationX) * cameraDistance;
+
+            camera.position.set(
+                cameraTarget.x + x,
+                cameraTarget.y + y,
+                cameraTarget.z + z
+            );
+
+            if (cameraLight) {
+                cameraLight.position.copy(camera.position);
             }
-            updateCameraPosition();
+
+            camera.lookAt(cameraTarget);
             renderer.render(scene, camera);
         }
-        function toggleOrbit() {
-            isOrbiting = !isOrbiting;
-            document.getElementById('cameraOrbitToggle').classList.toggle('text-primary');
-            document.getElementById('mobileOrbitToggle').classList.toggle('text-primary');
-        }
-        function resetView() {
-            rotationX = 0;
-            rotationZ = 0;
-            cameraDistance = 100;
-            cameraTarget.set(0, 0, 0);
-            isOrbiting = false;
-            document.getElementById('cameraOrbitToggle').classList.remove('text-primary');
-            document.getElementById('mobileOrbitToggle').classList.remove('text-primary');
+
+        function panCamera(x, y, z) {
+            const forward = new THREE.Vector3();
+            camera.getWorldDirection(forward);
+            forward.y = 0;
+            forward.normalize();
+
+            const right = new THREE.Vector3().crossVectors(camera.up, forward);
+            right.normalize();
+
+            cameraTarget.add(right.multiplyScalar(x));
+            cameraTarget.y += y;
+            cameraTarget.add(forward.multiplyScalar(z));
+
             updateCameraPosition();
         }
-        function toggleWireframe() {
-            isWireframe = !isWireframe;
-            if (model) {
-                model.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material.wireframe = isWireframe;
-                    }
-                });
+
+        function processKeyboardMovement() {
+            const moveDistance = movementSpeed * 0.1;
+
+            if (keys.w) {
+                const forward = new THREE.Vector3();
+                camera.getWorldDirection(forward);
+                forward.y = 0;
+                forward.normalize();
+                panCamera(0, 0, moveDistance);
             }
-            document.getElementById('wireframeToggle').classList.toggle('text-primary');
-            document.getElementById('mobileWireframeToggle').classList.toggle('text-primary');
+            if (keys.s) {
+                const forward = new THREE.Vector3();
+                camera.getWorldDirection(forward);
+                forward.y = 0;
+                forward.normalize();
+                panCamera(0, 0, -moveDistance);
+            }
+            if (keys.a) {
+                const right = new THREE.Vector3();
+                camera.getWorldDirection(right);
+                right.cross(camera.up);
+                right.y = 0;
+                right.normalize();
+                panCamera(moveDistance, 0, 0);
+            }
+            if (keys.d) {
+                const right = new THREE.Vector3();
+                camera.getWorldDirection(right);
+                right.cross(camera.up);
+                right.y = 0;
+                right.normalize();
+                panCamera(-moveDistance, 0, 0);
+            }
+
+            if (keys.ArrowUp) {
+                panCamera(0, moveDistance, 0);
+            }
+            if (keys.ArrowDown) {
+                panCamera(0, -moveDistance, 0);
+            }
         }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
         function loadModel(url) {
-            loadingIndicator.classList.remove('hidden');
+            if (!checkThreeJsLoaded()) return;
+
             const loader = new THREE.GLTFLoader();
+
+            loadingIndicator.classList.remove('hidden');
+            progressBar.style.width = '0%';
+
             loader.load(
                 url,
                 (gltf) => {
+                    if (model) {
+                        scene.remove(model);
+                    }
+
                     model = gltf.scene;
-                    scene.add(model);
+
+                    identifyModels(model);
+
                     const box = new THREE.Box3().setFromObject(model);
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z);
+
+                    const fov = camera.fov * (Math.PI / 180);
+                    cameraDistance = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
                     cameraTarget.copy(center);
-                    cameraDistance = maxDim * 2;
+
+                    rotationX = 0;
+                    rotationZ = 0;
+
+                    model.traverse(child => {
+                        if (child.isMesh && child.material) {
+                            child.material.wireframe = isWireframe;
+                        }
+                    });
+
+                    scene.add(model);
                     updateCameraPosition();
-                    loadingIndicator.classList.add('hidden');
-                    extractModelsFromScene();
+
+                    setTimeout(() => {
+                        loadingIndicator.classList.add('hidden');
+                        progressBar.style.width = '0%';
+                    }, 500);
+
+                    controlPanel.classList.remove('opacity-50', 'pointer-events-none');
+                    controlPanel.classList.add('opacity-100', 'pointer-events-auto');
                 },
                 (xhr) => {
-                    const progress = (xhr.loaded / xhr.total) * 100;
-                    progressBar.style.width = `${progress}%`;
+                    const percent = (xhr.loaded / xhr.total) * 100;
+                    progressBar.style.width = percent + '%';
                 },
                 (error) => {
                     console.error('模型加载错误:', error);
+
                     loadingIndicator.classList.add('hidden');
-                    alert('模型加载失败，请检查模型文件是否存在或格式是否正确');
+                    progressBar.style.width = '0%';
+
+                    alert('无法加载模型文件');
                 }
             );
         }
-        function extractModelsFromScene() {
-            models = [];
-            let modelCounter = 0;
-            scene.traverse((object) => {
-                if (object.isMesh) {
-                    models.push({
-                        id: modelCounter++,
-                        name: object.name || `模型_${modelCounter}`,
-                        object: object
-                    });
-                }
-            });
-            filterModels('');
-        }
-        function moveToModel(modelId) {
-            const model = models.find(m => m.id === modelId);
-            if (model) {
-                activeModelId = modelId;
-                cameraTarget.copy(model.object.position);
-                cameraDistance = 50;
-                isOrbiting = false;
-                document.getElementById('cameraOrbitToggle').classList.remove('text-primary');
-                document.getElementById('mobileOrbitToggle').classList.remove('text-primary');
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            processKeyboardMovement();
+
+            if (isOrbiting) {
+                rotationZ += rotationSpeed;
                 updateCameraPosition();
-                filterModels(modelSearch.value);
+            }
+
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
             }
         }
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`进入全屏失败: ${err.message}`);
-                });
-                document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-compress text-light"></i>';
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-                document.getElementById('fullscreenBtn').innerHTML = '<i class="fa fa-expand text-light"></i>';
-            }
-        }
+
+        document.getElementById('retryLoadResources').addEventListener('click', () => {
+            document.getElementById('resourceError').classList.add('hidden');
+            document.getElementById('initialLoading').classList.remove('hidden');
+            setTimeout(initApplication, 500);
+        });
+
         window.addEventListener('load', initApplication);
     </script>
 </body>
 </html>
-
-
-
