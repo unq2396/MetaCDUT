@@ -687,8 +687,8 @@
                     const deltaX = currentCenter.x - touchStart.previousCenter.x;
                     const deltaY = currentCenter.y - touchStart.previousCenter.y;
 
-                    const panX = deltaX * (movementSpeed * panSensitivity * 0.5);
-                    const panY = deltaY * (movementSpeed * panSensitivity * 0.5);
+                    const panX = deltaX * (movementSpeed * panSensitivity * 2);
+                    const panY = deltaY * (movementSpeed * panSensitivity * 2);
 
                     panCamera(panX, panY, 0);
 
@@ -1142,5 +1142,6 @@
 </body>
 </html>
     
+
 
 
