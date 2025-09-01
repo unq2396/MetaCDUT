@@ -221,10 +221,10 @@
         <div id="resourceError" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50 hidden">
             <div class="text-center p-6 panel max-w-md">
                 <i class="fa fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
-                <h2 class="text-xl font-bold text-red-400 mb-2">Three.js资源加载失败</h2>
-                <p class="text-light/80 mb-6">无法加载必要的3D渲染渲染库，请检查文件是否存在于同一目录</p>
+                <h2 class="text-xl font-bold text-red-400 mb-2">Three.js库已離線</h2>
+                <p class="text-light/80 mb-6">3D渲染库連接失敗</p>
                 <button id="retryLoadResources" class="px-6 py-3 bg-primary hover:bg-primary/80 rounded-lg transition transition-all">
-                    重新加载
+                    重新加載
                 </button>
             </div>
         </div>
@@ -1106,12 +1106,12 @@
                     progressBar.style.width = percent + '%';
                 },
                 (error) => {
-                    console.error('模型加载错误:', error);
+                    console.error('數字孿生模型加載錯誤:', error);
 
                     loadingIndicator.classList.add('hidden');
                     progressBar.style.width = '0%';
 
-                    alert('无法加载模型文件');
+                    alert('數字孿生模型已離線');
                 }
             );
         }
@@ -1142,3 +1142,4 @@
 </body>
 </html>
     
+
