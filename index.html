@@ -8,6 +8,7 @@
     <title>成都理工大學數字孿生模型</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./GLTFLoader.js"></script>
@@ -16,87 +17,247 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4F46E5',
-                        secondary: '#10B981',
-                        dark: '#0F172A',
+                        primary: '#00f3ff',
+                        secondary: '#ff00d6',
+                        accent: '#39ff14',
+                        dark: '#0a0a12',
                         light: '#F8FAFC',
+                        'neon-blue': '#00f3ff',
+                        'neon-pink': '#ff00d6',
+                        'neon-green': '#39ff14',
+                        'neon-yellow': '#ffee00',
+                        'dark-1': '#0a0a12',
+                        'dark-2': '#12121d',
+                        'dark-3': '#1a1a28',
                     },
                     fontFamily: {
-                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
                     },
+                    animation: {
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'scanline': 'scanline 10s linear infinite',
+                        'flicker': 'flicker 0.5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff' },
+                            '50%': { boxShadow: '0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff' }
+                        },
+                        'glow': {
+                            '0%': { boxShadow: '0 0 5px currentColor, 0 0 10px currentColor' },
+                            '100%': { boxShadow: '0 0 15px currentColor, 0 0 30px currentColor' }
+                        },
+                        'scanline': {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100vh)' }
+                        },
+                        'flicker': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.7 }
+                        }
+                    }
                 }
             }
         }
     </script>
     <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-rajdhani;
+            }
+
+            h1, h2, h3, h4, .tech-font {
+                @apply font-orbitron;
+            }
+        }
+
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
+
             .backdrop-blur {
                 backdrop-filter: blur(8px);
             }
+
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             }
+
+            .neon-text {
+                text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+            }
+
+            .tech-border {
+                border: 1px solid;
+                border-image: linear-gradient(45deg, #00f3ff, #ff00d6, #39ff14) 1;
+                box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.1);
+            }
+
+            .tech-panel {
+                @apply bg-dark-2/90 backdrop-blur border border-neon-blue/30 rounded-lg;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.1), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            }
+
+            .hex-pattern {
+                background-image: linear-gradient(to right, rgba(10, 10, 18, 0.9) 20%, rgba(10, 10, 18, 0.7) 40%, rgba(10, 10, 18, 0.9) 60%), radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.1) 0%, transparent 2%);
+                background-size: 100% 100%, 30px 30px;
+                background-position: 0 0, 0 0;
+            }
+
+            .grid-pattern {
+                background-image: linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+
             .control-btn {
-                @apply p-3 rounded-full transition transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
+                @apply p-3 rounded-lg transition-all duration-300 bg-dark-3/80 border border-neon-blue/30;
             }
+
+                .control-btn:hover {
+                    @apply bg-neon-blue/20 border-neon-blue/70 animate-pulse-glow;
+                }
+
+                .control-btn:active {
+                    @apply scale-95;
+                }
+
             .axis-btn {
-                @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
+                @apply w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 bg-dark-3/80 border border-neon-blue/30;
             }
+
             .panel {
-                @apply bg-dark/70 backdrop-blur border border-white/10 rounded-xl transition transition-all duration-300;
+                @apply tech-panel transition-all duration-300;
             }
+
+            .scanline-effect::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(to bottom, transparent 0%, rgba(0, 243, 255, 0.1) 50%, transparent 100%);
+                opacity: 0.1;
+                pointer-events: none;
+                animation: scanline 8s linear infinite;
+                z-index: 100;
+            }
+
             .mobile-control {
-                @apply fixed w-12 h-12 rounded-full bg-dark/60 backdrop-blur flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90;
+                @apply fixed w-12 h-12 rounded-lg bg-dark-3/80 border border-neon-blue/30 flex items-center justify-center shadow-lg transition-all duration-200;
             }
+
+                .mobile-control:hover {
+                    @apply bg-neon-blue/20 border-neon-blue/70;
+                }
+
+                .mobile-control:active {
+                    @apply scale-90;
+                }
+
             input[type="range"] {
-                @apply appearance-none w-full h-2 bg-white/20 rounded-full outline-none;
+                @apply appearance-none w-full h-1 bg-white/20 rounded-full outline-none;
             }
+
                 input[type="range"]::-webkit-slider-thumb {
-                    @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer;
+                    @apply appearance-none w-3 h-3 bg-neon-blue rounded-full cursor-pointer;
+                    box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff;
                 }
+
                 input[type="range"]::-moz-range-thumb {
-                    @apply w-4 h-4 bg-primary rounded-full cursor-pointer border-none;
+                    @apply w-3 h-3 bg-neon-blue rounded-full cursor-pointer border-none;
+                    box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff;
                 }
+
             .slider-value {
                 @apply text-xs text-light/60 mt-1 flex justify-between;
             }
-            .touch-hint {
-                @apply hidden;
-            }
+
             .building-list-item {
-                @apply p-2 rounded-lg hover:bg-primary/20 cursor-pointer transition-all duration-200 text-sm;
+                @apply p-2 rounded-lg hover:bg-neon-blue/10 cursor-pointer transition-all duration-200 text-sm border-b border-neon-blue/10;
             }
+
                 .building-list-item.active {
-                    @apply bg-primary/30;
+                    @apply bg-neon-blue/20 text-neon-blue;
+                    box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.2);
                 }
+
             .search-container {
                 @apply relative w-full mb-4;
             }
+
             .search-results {
                 @apply relative w-full max-h-60 overflow-y-auto;
             }
+
             .search-result-item {
-                @apply p-2 hover:bg-primary/20 cursor-pointer transition-all text-sm;
+                @apply p-2 hover:bg-neon-blue/10 cursor-pointer transition-all text-sm border-b border-neon-blue/10;
             }
+
             .connection-toast {
-                @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary/90 backdrop-blur px-6 py-4 rounded-lg text-light text-center z-50 opacity-0 transition-opacity duration-300;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-neon-blue/90 backdrop-blur px-6 py-4 rounded-lg text-dark-1 text-center z-50 opacity-0 transition-opacity duration-300;
+                box-shadow: 0 4px 20px rgba(0, 243, 255, 0.5);
             }
+
+            .loading-spinner {
+                border: 2px solid transparent;
+                border-top: 2px solid #00f3ff;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .data-panel {
+                @apply tech-panel p-3;
+            }
+
+            .data-value {
+                @apply text-neon-blue font-orbitron text-lg;
+            }
+
+            .data-label {
+                @apply text-xs text-light/60;
+            }
+
+            .pulse-element {
+                animation: pulse-glow 2s infinite;
+            }
+
+            @media (min-width: 768px) {
+                .data-panel {
+                    top: 6rem !important;
+                    left: 1rem !important;
+                    right: auto !important;
+                }
+            }
+
             @media (max-width: 768px) {
                 header {
                     width: 100% !important;
                     padding: 0.5rem !important;
                 }
-                header .container {
-                    flex-direction: row !important;
-                    align-items: center !important;
-                    justify-content: space-between !important;
-                    width: 100% !important;
-                    padding: 0 0.5rem !important;
-                }
+
+                    header .container {
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+                        width: 100% !important;
+                        padding: 0 0.5rem !important;
+                    }
+
                 .title-section {
                     display: flex !important;
                     flex-direction: column !important;
@@ -106,11 +267,13 @@
                     margin: 0 !important;
                     padding: 0 !important;
                 }
-                .title-section h1 {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    line-height: 1.2 !important;
-                }
+
+                    .title-section h1 {
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        line-height: 1.2 !important;
+                    }
+
                 .developer-text {
                     display: block !important;
                     margin: 0 !important;
@@ -118,6 +281,7 @@
                     font-size: 0.7rem !important;
                     width: 100% !important;
                 }
+
                 header .flex {
                     display: flex !important;
                     flex-direction: row !important;
@@ -127,209 +291,296 @@
                     margin: 0 !important;
                     min-width: auto !important;
                 }
-                header .flex button {
-                    padding: 0.4rem !important;
-                }
+
+                    header .flex button {
+                        padding: 0.4rem !important;
+                    }
+
                 #buildingsPanel {
                     width: 180px !important;
                     padding: 0.4rem !important;
                 }
+
                     #buildingsPanel h3 {
                         font-size: 0.8rem !important;
                         margin-bottom: 0.4rem !important;
                     }
+
                 #modalContent {
                     max-width: 240px !important;
                     padding: 0.6rem !important;
                 }
+
                     #modalContent h2 {
                         font-size: 1.0rem !important;
                     }
+
                     #modalContent p, #modalContent li {
                         font-size: 0.75rem !important;
                     }
+
                 .mobile-control {
-                    width: 100px !important;
-                    height: 100px !important;
+                    width: 40px !important;
+                    height: 40px !important;
                 }
+
                     .mobile-control i {
-                        font-size: 1.2rem !important;
+                        font-size: 1rem !important;
                     }
+
                 #mobileResetView {
                     bottom: 90px !important;
                     left: 12px !important;
                 }
+
                 #mobileOrbitToggle {
                     bottom: 12px !important;
                     left: 12px !important;
                 }
+
                 #mobileWireframeToggle {
                     top: 70px !important;
                     right: 12px !important;
                 }
+
                 #controlPanel {
-                    bottom: 10px !important;
-                    padding: 0.4rem !important;
-                    transform: translateX(-50%) scale(0.8);
+                    display: flex !important;
+                    bottom: 20px !important;
+                    left: 50% !important;
+                    transform: translateX(-50%) scale(0.85) !important;
+                    width: 90% !important;
+                    max-width: 270px !important;
+                    z-index: 40 !important;
                 }
+    
                 .control-btn {
                     padding: 0.6rem !important;
                 }
+
                     .control-btn i {
-                        font-size: 0.9rem !important;
+                        font-size: 0.85rem !important;
                     }
+
+                .mobile-fps-panel {
+                    padding: 0.5rem !important;
+                    top: 70px !important;
+                    left: 10px !important;
+                }
+
+                .mobile-fps-value {
+                    font-size: 0.8rem !important;
+                }
+
+                .mobile-fps-label {
+                    font-size: 0.6rem !important;
+                }
+
+                @media (max-width: 768px) and (orientation: landscape) {
+                    #buildingsPanel {
+                        width: 220px !important;
+                        max-height: 50vh !important;
+                        top: 140px !important;
+                        right: 10px !important;
+                        overflow-y: auto !important;
+                    }
+
+                    #buildingSearch {
+                        font-size: 0.8rem !important;
+                        padding: 0.3rem !important;
+                    }
+
+                    .building-list-item {
+                        font-size: 0.75rem !important;
+                        padding: 0.3rem !important;
+                    }
+
+                    #modalContent {
+                        max-width: 60vw !important;
+                        max-height: 80vh !important;
+                        overflow-y: auto !important;
+                        padding: 0.8rem !important;
+                    }
+
+                        #modalContent h2 {
+                            font-size: 0.9rem !important;
+                            margin-bottom: 0.5rem !important;
+                        }
+
+                        #modalContent p, #modalContent li {
+                            font-size: 0.7rem !important;
+                            line-height: 1.4 !important;
+                        }
+
+                    #controlPanel {
+                        bottom: 10px !important;
+                        transform: translateX(-50%) scale(0.8) !important;
+                    }
+                }
             }
         }
     </style>
 </head>
-<body class="bg-dark text-light font-inter overflow-hidden h-screen">
-    <div id="connectionToast" class="connection-toast">
-        數字孿生模型已連線
+<body class="bg-dark-1 text-light font-rajdhani overflow-hidden h-screen hex-pattern">
+    <div id="connectionToast" class="connection-toast font-orbitron">
+        系統連線成功
     </div>
 
-    <header class="fixed top-0 left-0 right-0 z-50 bg-dark/70 backdrop-blur transition-all duration-300">
+    <div class="fixed top-20 left-4 z-40 data-panel scanline-effect mobile-fps-panel">
+        <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
+            <div>
+                <div class="data-value mobile-fps-value" id="fpsCounter">60 FPS</div>
+                <div class="data-label mobile-fps-label">渲染性能</div>
+            </div>
+        </div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dark-2/80 backdrop-blur transition-all duration-300 border-b border-neon-blue/20">
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="title-section flex flex-col items-start w-full md:w-auto mb-3 md:mb-0">
-                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary text-shadow">MetaCDUT</h1>
-                <span class="developer-text text-xs text-light/60">Developed by unq</span>
+                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-neon-pink neon-text">META<span class="text-neon-blue">CDUT</span></h1>
+                <span class="developer-text text-xs text-neon-blue/80">Developed by unq</span>
             </div>
 
-            <div class="flex items-center space-x-4 w-full md:w-auto justify-end">
-                <button id="infoBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
-                    <i class="fa fa-info text-light"></i>
+            <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
+                <button id="infoBtn" class="control-btn" title="系统信息">
+                    <i class="fa fa-info text-neon-blue"></i>
                 </button>
-                <button id="fullscreenBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
-                    <i class="fa fa-expand text-light"></i>
+                <button id="fullscreenBtn" class="control-btn" title="全屏模式">
+                    <i class="fa fa-expand text-neon-blue"></i>
                 </button>
-                <button id="toggleBuildingsBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
-                    <i class="fa fa-building text-light"></i>
+                <button id="toggleBuildingsBtn" class="control-btn" title="建筑列表">
+                    <i class="fa fa-building text-neon-blue"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="relative h-full w-full">
+    <main class="relative h-full w-full scanline-effect">
         <canvas id="viewerCanvas" class="w-full h-full"></canvas>
 
-        <div id="initialLoading" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50">
+        <div id="initialLoading" class="absolute inset-0 flex items-center justify-center bg-dark-1/90 z-50 grid-pattern">
             <div class="flex flex-col items-center">
-                <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                <p id="loadingStatus" class="mt-4 text-lg">環境初始化…</p>
-            </div>
-        </div>
-
-        <div id="resourceError" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50 hidden">
-            <div class="text-center p-6 panel max-w-md">
-                <i class="fa fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
-                <h2 class="text-xl font-bold text-red-400 mb-2">Three.js库已離線</h2>
-                <p class="text-light/80 mb-6">3D渲染库連接失敗</p>
-                <button id="retryLoadResources" class="px-6 py-3 bg-primary hover:bg-primary/80 rounded-lg transition transition-all">
-                    重新加載
-                </button>
-            </div>
-        </div>
-
-        <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-40 transition-opacity duration-500 hidden">
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                <p class="mt-4 text-lg">伺服器通信中…</p>
-                <div id="loadingProgress" class="mt-2 w-48 h-1 bg-white/20 rounded-full overflow-hidden">
-                    <div id="progressBar" class="h-full bg-primary w-0 transition-all duration-300"></div>
+                <div class="w-16 h-16 loading-spinner"></div>
+                <p id="loadingStatus" class="mt-4 text-neon-blue font-orbitron">環境初始化中...</p>
+                <div class="mt-2 w-48 h-1 bg-neon-blue/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-neon-blue w-1/2" style="box-shadow: 0 0 10px #00f3ff;"></div>
                 </div>
             </div>
         </div>
 
-        <div class="fixed:hidden">
-            <button id="mobileResetView" class="mobile-control bottom-6 left-6" title="重置视图">
-                <i class="fa fa-home text-light text-xl"></i>
-            </button>
-            <button id="mobileOrbitToggle" class="mobile-control bottom-6 right-6" title="切换自动旋转">
-                <i class="fa fa-refresh text-light text-xl"></i>
-            </button>
-            <button id="mobileWireframeToggle" class="mobile-control top-24 right-6" title="切换线框模式">
-                <i class="fa fa-cubes text-light text-xl"></i>
-            </button>
+        <div id="resourceError" class="absolute inset-0 flex items-center justify-center bg-dark-1/90 z-50 hidden">
+            <div class="text-center p-6 tech-panel max-w-md">
+                <i class="fa fa-exclamation-triangle text-neon-pink text-5xl mb-4"></i>
+                <h2 class="text-xl font-bold text-neon-pink mb-2 font-orbitron">系統錯誤</h2>
+                <p class="text-light/80 mb-6">無法加載3D渲染庫，請檢查資源文件</p>
+                <button id="retryLoadResources" class="px-6 py-3 bg-neon-blue text-dark-1 font-orbitron hover:bg-neon-blue/80 rounded-lg transition-all">
+                    重新嘗試
+                </button>
+            </div>
         </div>
 
-        <div class="touch-hint">
-            <span>单指拖动旋转 | 双指拖动平移 | 双指捏合缩放</span>
+        <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark-1/90 z-40 transition-opacity duration-500 hidden">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 loading-spinner"></div>
+                <p class="mt-4 text-neon-blue font-orbitron">伺服器通信中…</p>
+                <div id="loadingProgress" class="mt-2 w-48 h-1 bg-neon-blue/20 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full bg-neon-blue w-0 transition-all duration-300" style="box-shadow: 0 0 10px #00f3ff;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed md:hidden">
+            <button id="mobileResetView" class="mobile-control bottom-20 left-6" title="重置视图">
+                <i class="fa fa-home text-neon-blue"></i>
+            </button>
+            <button id="mobileOrbitToggle" class="mobile-control bottom-6 left-6" title="切换自动旋转">
+                <i class="fa fa-refresh text-neon-blue"></i>
+            </button>
+            <button id="mobileWireframeToggle" class="mobile-control top-24 right-6" title="切换线框模式">
+                <i class="fa fa-cubes text-neon-blue"></i>
+            </button>
         </div>
 
     </main>
 
-    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 panel px-4 py-2 flex items items-center space-x-6 z-40 opacity-50 pointer-events-events-none transition-all duration-300 hidden md:flex" id="controlPanel">
+    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 panel px-4 py-2 flex items-center space-x-4 z-40 opacity-100 pointer-events-auto transition-all duration-300 hidden md:flex" id="controlPanel">
         <button id="cameraOrbitToggle" class="control-btn" title="切换自动旋转">
-            <i class="fa fa-refresh text-light"></i>
+            <i class="fa fa-refresh text-neon-blue"></i>
         </button>
         <button id="resetView" class="control-btn" title="重置视图">
-            <i class="fa fa-home text-light"></i>
+            <i class="fa fa-home text-neon-blue"></i>
         </button>
         <button id="zoomIn" class="control-btn" title="放大">
-            <i class="fa fa-search-plus text-light"></i>
+            <i class="fa fa-search-plus text-neon-blue"></i>
         </button>
         <button id="zoomOut" class="control-btn" title="缩小">
-            <i class="fa fa-search-minus text-light"></i>
+            <i class="fa fa-search-minus text-neon-blue"></i>
         </button>
         <button id="wireframeToggle" class="control-btn" title="切换线框模式">
-            <i class="fa fa-cubes text-light"></i>
+            <i class="fa fa-cubes text-neon-blue"></i>
         </button>
     </div>
 
     <div id="buildingsPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 opacity-0 pointer-events-none transition-all duration-300 z-40">
-        <h3 class="font-bold text-primary mb-4 flex items-center">
-            <i class="fa fa-building mr-2"></i>建筑列表
+        <h3 class="font-bold text-neon-blue mb-4 flex items-center font-orbitron">
+            <i class="fa fa-building mr-2"></i>建築數據庫
         </h3>
 
         <div class="search-container">
-            <input type="text" id="buildingSearch" placeholder="搜索……"
-                   class="w-full bg-dark/50 border border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <input type="text" id="buildingSearch" placeholder="搜索建築..."
+                   class="w-full bg-dark-3/50 border border-neon-blue/30 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neon-blue/50 text-light placeholder-neon-blue/50">
         </div>
 
         <div id="buildingsList" class="search-results">
-            <div class="text-light/60 text-sm text-center py-4">加载建筑中...</div>
+            <div class="text-neon-blue/60 text-sm text-center py-4">加載建築數據中...</div>
         </div>
     </div>
 
     <div id="infoModal" class="fixed inset-0 bg-black/60 backdrop-blur z-50 flex items-center justify-center hidden">
         <div class="panel p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-primary">操作说明</h2>
-                <button id="closeInfoBtn" class="text-light hover:text-primary transition-colors">
+                <h2 class="text-xl font-bold text-neon-blue font-orbitron">系統操作指南</h2>
+                <button id="closeInfoBtn" class="text-light hover:text-neon-blue transition-colors">
                     <i class="fa fa-times"></i>
                 </button>
             </div>
             <div class="space-y-4">
-                <p class="text-light/80">成都理工大学数字孪生模型</p>
+                <p class="text-light/80">成都理工大學數字孿生系統 - 版本 1.0.0</p>
 
-                <div class="pt-2 border-t border-light/10">
-                    <h3 class="font-semibold mb-2">桌面端控制方式：</h3>
+                <div class="pt-2 border-t border-neon-blue/10">
+                    <h3 class="font-semibold mb-2 text-neon-blue">桌面端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
-                        <li><i class="fa fa-hand-paper-o mr-2 text-primary"></i> 滚轮键拖拽 - 平移相机</li>
-                        <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 左键拖拽 - 旋转视角</li>
-                        <li><i class="fa fa-search mr-2 text-primary"></i> 滚轮 - 缩放相机</li>
-                        <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 双击 - 设置旋转中心</li>
-                        <li><i class="fa fa-keyboard-o mr-2 text-primary"></i> WASD - 平移相机</li>
-                        <li><i class="fa fa-keyboard-o mr-2 text-primary"></i> 上下键 - 摄像机上下移动</li>
+                        <li><i class="fa fa-hand-paper-o mr-2 text-neon-blue"></i> 滚轮键拖拽 - 平移相机</li>
+                        <li><i class="fa fa-hand-pointer-o mr-2 text-neon-blue"></i> 左键拖拽 - 旋转视角</li>
+                        <li><i class="fa fa-search mr-2 text-neon-blue"></i> 滚轮 - 缩放相机</li>
+                        <li><i class="fa fa-hand-pointer-o mr-2 text-neon-blue"></i> 双击 - 设置旋转中心</li>
+                        <li><i class="fa fa-keyboard-o mr-2 text-neon-blue"></i> WASD - 平移相机</li>
+                        <li><i class="fa fa-keyboard-o mr-2 text-neon-blue"></i> 上下键 - 摄像机上下移动</li>
                     </ul>
                 </div>
 
-                <div class="pt-2 border-t border-light/10">
-                    <h3 class="font-semibold mb-2">移动端控制方式：</h3>
+                <div class="pt-2 border-t border-neon-blue/10">
+                    <h3 class="font-semibold mb-2 text-neon-blue">移動端控制方式：</h3>
                     <ul class="space-y-1 text-light/80">
-                        <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 单指拖拽 - 旋转视角</li>
-                        <li><i class="fa fa-hand-rock-o mr-2 text-primary"></i> 双指拖拽 - 平移相机</li>
-                        <li><i class="fa fa-arrows-alt mr-2 text-primary"></i> 双指捏合/张开 - 缩放</li>
+                        <li><i class="fa fa-hand-pointer-o mr-2 text-neon-blue"></i> 单指拖拽 - 旋转视角</li>
+                        <li><i class="fa fa-hand-rock-o mr-2 text-neon-blue"></i> 双指拖拽 - 平移相机</li>
+                        <li><i class="fa fa-arrows-alt mr-2 text-neon-blue"></i> 双指捏合/张开 - 缩放</li>
                     </ul>
                 </div>
 
-                <div class="pt-2 border-t border-light/10">
-                    <h3 class="font-semibold mb-2">通用控制：</h3>
+                <div class="pt-2 border-t border-neon-blue/10">
+                    <h3 class="font-semibold mb-2 text-neon-blue">通用控制：</h3>
                     <ul class="space-y-1 text-light/80">
-                        <li><i class="fa fa-refresh mr-2 text-primary"></i> 切换自动旋转</li>
-                        <li><i class="fa fa-home mr-2 text-primary"></i> 重置视图</li>
-                        <li><i class="fa fa-cubes mr-2 text-primary"></i> 切换线框模式</li>
-                        <li><i class="fa fa-list mr-2 text-primary"></i> 建筑列表</li>
+                        <li><i class="fa fa-refresh mr-2 text-neon-blue"></i> 切换自动旋转</li>
+                        <li><i class="fa fa-home mr-2 text-neon-blue"></i> 重置视图</li>
+                        <li><i class="fa fa-cubes mr-2 text-neon-blue"></i> 切换线框模式</li>
+                        <li><i class="fa fa-list mr-2 text-neon-blue"></i> 建筑列表</li>
                     </ul>
+                </div>
+
+                <div class="pt-2 border-t border-neon-blue/10 text-xs text-neon-blue/60">
+                    <p>© 2025 成都理工大学数字孿生計劃</p>
                 </div>
             </div>
         </div>
@@ -369,6 +620,10 @@
             ArrowUp: false, ArrowDown: false
         };
 
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 0;
+
         const canvas = document.getElementById('viewerCanvas');
         const initialLoading = document.getElementById('initialLoading');
         const loadingIndicator = document.getElementById('loadingIndicator');
@@ -378,6 +633,7 @@
         const modelsPanel = document.getElementById('buildingsPanel');
         const modelsList = document.getElementById('buildingsList');
         const modelSearch = document.getElementById('buildingSearch');
+        const fpsCounter = document.getElementById('fpsCounter');
 
         function checkThreeJsLoaded() {
             if (typeof THREE === 'undefined') {
@@ -408,6 +664,8 @@
                 loadModel('https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb');
 
                 hideModelsPanel();
+
+                updateFPS();
             }, 500);
 
             initScene();
@@ -421,6 +679,29 @@
             if (window.innerWidth < 768) {
                 hideModelsPanel();
             }
+        }
+
+        function updateFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime - lastTime >= 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                frameCount = 0;
+                lastTime = currentTime;
+
+                if (fpsCounter) {
+                    fpsCounter.textContent = `${fps} FPS`;
+
+                    if (fps > 55) {
+                        fpsCounter.className = 'data-value mobile-fps-value text-neon-green';
+                    } else if (fps > 30) {
+                        fpsCounter.className = 'data-value mobile-fps-value text-neon-yellow';
+                    } else {
+                        fpsCounter.className = 'data-value mobile-fps-value text-neon-pink';
+                    }
+                }
+            }
+            requestAnimationFrame(updateFPS);
         }
 
         function showModelsPanel() {
@@ -455,8 +736,8 @@
 
             if (models.length === 0) {
                 const noModelMsg = document.createElement('div');
-                noModelMsg.className = 'text-light/60 text-sm text-center py-4';
-                noModelMsg.textContent = '未识别到建筑';
+                noModelMsg.className = 'text-neon-blue/60 text-sm text-center py-4';
+                noModelMsg.textContent = '未識別到建築';
                 modelsList.appendChild(noModelMsg);
                 return;
             }
@@ -488,8 +769,8 @@
                 });
             } else {
                 const noResult = document.createElement('div');
-                noResult.className = 'text-light/60 text-sm text-center py-4';
-                noResult.textContent = '未找到匹配的建筑';
+                noResult.className = 'text-neon-blue/60 text-sm text-center py-4';
+                noResult.textContent = '未找到匹配的建築';
                 modelsList.appendChild(noResult);
             }
         }
@@ -498,19 +779,23 @@
             console.log('初始化3D场景');
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a1a2e);
+            scene.background = new THREE.Color(0x0a0a12);
 
-            ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+            ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
             directionalLight.position.set(10, 20, 15);
+            directionalLight.distance = 5000;
+            directionalLight.decay = 0;
             scene.add(directionalLight);
 
-            cameraLight = new THREE.PointLight(0xffffff, 1.0, 1000);
-            scene.add(cameraLight);
+            const neonLight1 = new THREE.PointLight(0x00f3ff, 0.4, 2000);
+            neonLight1.position.set(20, 10, 0);
+            neonLight1.decay = 0;
+            scene.add(neonLight1);
 
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 5000);
 
             renderer = new THREE.WebGLRenderer({
                 canvas: canvas,
@@ -520,7 +805,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.5;
+            renderer.toneMappingExposure = 1.8;
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enabled = false;
@@ -921,6 +1206,14 @@
                             model.traverse(child => {
                                 if (child.isMesh && child.material) {
                                     child.material.wireframe = isWireframe;
+
+                                    if (isWireframe) {
+                                        child.material.emissive = new THREE.Color(0x00f3ff);
+                                        child.material.emissiveIntensity = 0.5;
+                                    } else {
+                                        child.material.emissive = new THREE.Color(0x000000);
+                                        child.material.emissiveIntensity = 0;
+                                    }
                                 }
                             });
                         }
@@ -966,7 +1259,7 @@
             const targetZ = cameraTarget.z + z;
 
             const clampedX = Math.max(-2000, Math.min(2000, targetX));
-            const clampedY = Math.max(-2000, Math.min(2000, targetY));
+            const clampedY = Math.max(0, Math.min(2000, targetY));
             const clampedZ = Math.max(-2000, Math.min(2000, targetZ));
 
             camera.position.set(clampedX, clampedY, clampedZ);
@@ -1000,7 +1293,7 @@
         }
 
         function processKeyboardMovement() {
-            const moveDistance = movementSpeed * 0.1;
+            const moveDistance = movementSpeed * 3;
 
             if (keys.w) {
                 const forward = new THREE.Vector3();
@@ -1086,6 +1379,11 @@
                     model.traverse(child => {
                         if (child.isMesh && child.material) {
                             child.material.wireframe = isWireframe;
+
+                            if (isWireframe) {
+                                child.material.emissive = new THREE.Color(0x00f3ff);
+                                child.material.emissiveIntensity = 0.5;
+                            }
                         }
                     });
 
@@ -1106,12 +1404,12 @@
                     progressBar.style.width = percent + '%';
                 },
                 (error) => {
-                    console.error('數字孿生模型加載錯誤:', error);
+                    console.error('模型加载错误:', error);
 
                     loadingIndicator.classList.add('hidden');
                     progressBar.style.width = '0%';
 
-                    alert('數字孿生模型已離線');
+                    alert('無法加載模型文件');
                 }
             );
         }
@@ -1141,7 +1439,3 @@
     </script>
 </body>
 </html>
-    
-
-
-
