@@ -5,14 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Meta CDUT - 3D查看器</title>
+    <title>成都理工大學數字孿生模型</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
     <script src="./three.js"></script>
     <script src="./OrbitControls.js"></script>
     <script src="./GLTFLoader.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -30,133 +28,170 @@
             }
         }
     </script>
-
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
-
             .backdrop-blur {
                 backdrop-filter: blur(8px);
             }
-
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             }
-
             .control-btn {
                 @apply p-3 rounded-full transition transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
-
             .axis-btn {
                 @apply w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-primary/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50;
             }
-
             .panel {
                 @apply bg-dark/70 backdrop-blur border border-white/10 rounded-xl transition transition-all duration-300;
             }
-
             .mobile-control {
-                @apply fixed w-14 h-14 rounded-full bg-dark/60 backdrop-blur flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90;
+                @apply fixed w-12 h-12 rounded-full bg-dark/60 backdrop-blur flex items-center justify-center shadow-lg transition-all duration-200 active:scale-90;
             }
-
             input[type="range"] {
                 @apply appearance-none w-full h-2 bg-white/20 rounded-full outline-none;
             }
-
                 input[type="range"]::-webkit-slider-thumb {
                     @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer;
                 }
-
                 input[type="range"]::-moz-range-thumb {
                     @apply w-4 h-4 bg-primary rounded-full cursor-pointer border-none;
                 }
-
             .slider-value {
                 @apply text-xs text-light/60 mt-1 flex justify-between;
             }
-
             .touch-hint {
-                @apply fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-dark/70 backdrop-blur px-4 py-2 rounded-full text-sm z-30 hidden md:block;
+                @apply hidden;
             }
-
             .building-list-item {
                 @apply p-2 rounded-lg hover:bg-primary/20 cursor-pointer transition-all duration-200 text-sm;
             }
-
                 .building-list-item.active {
                     @apply bg-primary/30;
                 }
-
             .search-container {
                 @apply relative w-full mb-4;
             }
-
             .search-results {
                 @apply relative w-full max-h-60 overflow-y-auto;
             }
-
             .search-result-item {
                 @apply p-2 hover:bg-primary/20 cursor-pointer transition-all text-sm;
             }
-
+            .connection-toast {
+                @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary/90 backdrop-blur px-6 py-4 rounded-lg text-light text-center z-50 opacity-0 transition-opacity duration-300;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
             @media (max-width: 768px) {
-                #propertiesPanel, #buildingsPanel {
-                    width: 240px !important;
-                    padding: 0.75rem !important;
+                header {
+                    width: 100% !important;
+                    padding: 0.5rem !important;
                 }
-
-                    #propertiesPanel h3, #buildingsPanel h3 {
-                        font-size: 1rem !important;
-                        margin-bottom: 0.75rem !important;
+                header .container {
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                    width: 100% !important;
+                    padding: 0 0.5rem !important;
+                }
+                .title-section {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: flex-start !important;
+                    justify-content: center !important;
+                    flex: 1 !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                .title-section h1 {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    line-height: 1.2 !important;
+                }
+                .developer-text {
+                    display: block !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    font-size: 0.7rem !important;
+                    width: 100% !important;
+                }
+                header .flex {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    gap: 0.5rem !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    min-width: auto !important;
+                }
+                header .flex button {
+                    padding: 0.4rem !important;
+                }
+                #buildingsPanel {
+                    width: 180px !important;
+                    padding: 0.4rem !important;
+                }
+                    #buildingsPanel h3 {
+                        font-size: 0.8rem !important;
+                        margin-bottom: 0.4rem !important;
                     }
-
-                    #propertiesPanel .space-y-4 > div {
-                        margin-bottom: 0.75rem !important;
+                #modalContent {
+                    max-width: 240px !important;
+                    padding: 0.6rem !important;
+                }
+                    #modalContent h2 {
+                        font-size: 1.0rem !important;
                     }
-
-                    #propertiesPanel label {
+                    #modalContent p, #modalContent li {
                         font-size: 0.75rem !important;
                     }
-
-                #modalContent {
-                    max-width: 280px !important;
-                    padding: 1rem !important;
+                .mobile-control {
+                    width: 100px !important;
+                    height: 100px !important;
                 }
-
-                    #modalContent h2 {
-                        font-size: 1.25rem !important;
+                    .mobile-control i {
+                        font-size: 1.2rem !important;
                     }
-
-                    #modalContent p, #modalContent li {
-                        font-size: 0.85rem !important;
-                    }
-
                 #mobileResetView {
-                    bottom: 60px !important;
-                    left: 16px !important;
+                    bottom: 90px !important;
+                    left: 12px !important;
                 }
-
                 #mobileOrbitToggle {
-                    bottom: 16px !important;
-                    left: 16px !important;
+                    bottom: 12px !important;
+                    left: 12px !important;
                 }
-
                 #mobileWireframeToggle {
-                    top: 80px !important;
-                    right: 16px !important;
+                    top: 70px !important;
+                    right: 12px !important;
                 }
+                #controlPanel {
+                    bottom: 10px !important;
+                    padding: 0.4rem !important;
+                    transform: translateX(-50%) scale(0.8);
+                }
+                .control-btn {
+                    padding: 0.6rem !important;
+                }
+                    .control-btn i {
+                        font-size: 0.9rem !important;
+                    }
             }
         }
     </style>
 </head>
 <body class="bg-dark text-light font-inter overflow-hidden h-screen">
+    <div id="connectionToast" class="connection-toast">
+        數字孿生模型已連線
+    </div>
+
     <header class="fixed top-0 left-0 right-0 z-50 bg-dark/70 backdrop-blur transition-all duration-300">
         <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center w-full md:w-auto mb-3 md:mb-0">
-                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary text-shadow">Meta CDUT</h1>
-                <span class="text-xs text-light/60 ml-1">Developed by unq</span>
+            <div class="title-section flex flex-col items-start w-full md:w-auto mb-3 md:mb-0">
+                <h1 class="text-[clamp(1.2rem,3vw,1.8rem)] font-bold text-primary text-shadow">MetaCDUT</h1>
+                <span class="developer-text text-xs text-light/60">Developed by unq</span>
             </div>
 
             <div class="flex items-center space-x-4 w-full md:w-auto justify-end">
@@ -167,10 +202,7 @@
                     <i class="fa fa-expand text-light"></i>
                 </button>
                 <button id="toggleBuildingsBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
-                    <i class="fa fa-list text-light"></i>
-                </button>
-                <button id="togglePropertiesBtn" class="p-2 rounded-full hover:bg-primary/20 transition-all">
-                    <i class="fa fa-sliders text-light"></i>
+                    <i class="fa fa-building text-light"></i>
                 </button>
             </div>
         </div>
@@ -182,7 +214,7 @@
         <div id="initialLoading" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-50">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                <p id="loadingStatus" class="mt-4 text-lg">初始化3D环境中...</p>
+                <p id="loadingStatus" class="mt-4 text-lg">環境初始化…</p>
             </div>
         </div>
 
@@ -200,7 +232,7 @@
         <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark/80 z-40 transition-opacity duration-500 hidden">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                <p class="mt-4 text-lg">加载3D模型中...</p>
+                <p class="mt-4 text-lg">伺服器通信中…</p>
                 <div id="loadingProgress" class="mt-2 w-48 h-1 bg-white/20 rounded-full overflow-hidden">
                     <div id="progressBar" class="h-full bg-primary w-0 transition-all duration-300"></div>
                 </div>
@@ -243,96 +275,18 @@
         </button>
     </div>
 
-    <div id="propertiesPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden md-hidden md:block opacity-100 pointer-events-events-auto transition-all duration-300 z-40">
+    <div id="buildingsPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 opacity-0 pointer-events-none transition-all duration-300 z-40">
         <h3 class="font-bold text-primary mb-4 flex items-center">
-            <i class="fa fa-sliders mr-2"></i>属性控制
-        </h3>
-
-        <div class="space-y-4">
-            <div>
-                <label class="block text-sm mb-1 text-light/80">旋转灵敏度</label>
-                <input id="rotationSensitivity" type="range" min="0.001" max="0.01" step="0.0005" value="0.005"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="rotationSensitivityValue">0.005</span></span>
-                    <span>范围: 0.001-0.01</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">拖拽平移灵敏度</label>
-                <input id="panSensitivity" type="range" min="0.05" max="1.5" step="0.01" value="0.1"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="panSensitivityValue">0.1</span></span>
-                    <span>范围: 0.05-1.5</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">旋转速度（绕蓝轴Z）</label>
-                <input id="orbitSpeed" type="range" min="0.001" max="0.02" step="0.001" value="0.01"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="orbitSpeedValue">0.01</span></span>
-                    <span>范围: 0.001-0.02</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">移动速度</label>
-                <input id="movementSpeed" type="range" min="0.1" max="5" step="0.1" value="1"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="movementSpeedValue">1</span></span>
-                    <span>范围: 0.1-5</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">环境光强度</label>
-                <input id="ambientLight" type="range" min="0" max="5" step="0.1" value="1.2"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="ambientLightValue">1.2</span></span>
-                    <span>范围: 0-5</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">方向光强度</label>
-                <input id="directionalLight" type="range" min="0" max="5" step="0.1" value="1.5"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="directionalLightValue">1.5</span></span>
-                    <span>范围: 0-5</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm mb-1 text-light/80">背景亮度</label>
-                <input id="backgroundBrightness" type="range" min="0" max="1" step="0.05" value="0.4"
-                       class="w-full accent-primary">
-                <div class="slider-value">
-                    <span>值: <span id="backgroundBrightnessValue">0.4</span></span>
-                    <span>范围: 0-1</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="buildingsPanel" class="fixed top-[53%] right-4 transform -translate-y-1/2 panel p-4 w-64 hidden opacity-0 pointer-events-none transition-all duration-300 z-40">
-        <h3 class="font-bold text-primary mb-4 flex items-center">
-            <i class="fa fa-cubes mr-2"></i>模型列表
+            <i class="fa fa-building mr-2"></i>建筑列表
         </h3>
 
         <div class="search-container">
-            <input type="text" id="buildingSearch" placeholder="搜索模型..."
+            <input type="text" id="buildingSearch" placeholder="搜索……"
                    class="w-full bg-dark/50 border border-white/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
         </div>
 
         <div id="buildingsList" class="search-results">
-            <div class="text-light/60 text-sm text-center py-4">加载模型中...</div>
+            <div class="text-light/60 text-sm text-center py-4">加载建筑中...</div>
         </div>
     </div>
 
@@ -345,7 +299,7 @@
                 </button>
             </div>
             <div class="space-y-4">
-                <p class="text-light/80">此查看器用于展示CDUT三维重建模型</p>
+                <p class="text-light/80">此网站用于展示成都理工大学数字孪生模型</p>
 
                 <div class="pt-2 border-t border-light/10">
                     <h3 class="font-semibold mb-2">桌面端控制方式：</h3>
@@ -365,7 +319,6 @@
                         <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 单指拖拽 - 旋转视角</li>
                         <li><i class="fa fa-hand-rock-o mr-2 text-primary"></i> 双指拖拽 - 平移相机</li>
                         <li><i class="fa fa-arrows-alt mr-2 text-primary"></i> 双指捏合/张开 - 缩放</li>
-                        <li><i class="fa fa-hand-pointer-o mr-2 text-primary"></i> 双击 - 设置旋转中心</li>
                     </ul>
                 </div>
 
@@ -375,7 +328,7 @@
                         <li><i class="fa fa-refresh mr-2 text-primary"></i> 切换自动旋转</li>
                         <li><i class="fa fa-home mr-2 text-primary"></i> 重置视图</li>
                         <li><i class="fa fa-cubes mr-2 text-primary"></i> 切换线框模式</li>
-                        <li><i class="fa fa-list mr-2 text-primary"></i> 模型列表 - 快速定位到特定模型</li>
+                        <li><i class="fa fa-list mr-2 text-primary"></i> 建筑列表</li>
                     </ul>
                 </div>
             </div>
@@ -387,8 +340,8 @@
         let ambientLight, directionalLight, cameraLight;
         let cameraTarget = new THREE.Vector3(0, 0, 0);
         let isOrbiting = false;
-        let rotationSpeed = 0.01;
-        let movementSpeed = 1;
+        let rotationSpeed = 0.002;
+        let movementSpeed = 0.2;
         let isWireframe = false;
         let cameraDistance = 100;
         let rotationX = 0;
@@ -401,7 +354,7 @@
         let activeModelId = -1;
 
         let rotationSensitivity = 0.005;
-        let panSensitivity = 0.1;
+        let panSensitivity = 2.5;
 
         let touchStart = {
             touches: 0,
@@ -422,7 +375,6 @@
         const progressBar = document.getElementById('progressBar');
         const uploadPrompt = document.getElementById('uploadPrompt');
         const controlPanel = document.getElementById('controlPanel');
-        const propertiesPanel = document.getElementById('propertiesPanel');
         const modelsPanel = document.getElementById('buildingsPanel');
         const modelsList = document.getElementById('buildingsList');
         const modelSearch = document.getElementById('buildingSearch');
@@ -436,6 +388,15 @@
             return true;
         }
 
+        function showConnectionToast() {
+            const toast = document.getElementById('connectionToast');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+            }, 2000);
+        }
+
         function initApplication() {
             console.log('初始化应用程序');
 
@@ -444,60 +405,21 @@
             setTimeout(() => {
                 document.getElementById('initialLoading').classList.add('hidden');
 
-                loadModel('XXX');
+                loadModel('https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb');
 
-                showPropertiesPanel();
+                hideModelsPanel();
             }, 500);
 
             initScene();
 
             setupSearchFunctionality();
 
-            document.getElementById('togglePropertiesBtn').addEventListener('click', () => {
-                togglePropertiesPanel();
-                if (modelsPanel.classList.contains('opacity-100')) {
-                    hideModelsPanel();
-                }
-            });
-
             document.getElementById('toggleBuildingsBtn').addEventListener('click', () => {
                 toggleModelsPanel();
-                if (propertiesPanel.classList.contains('opacity-100')) {
-                    hidePropertiesPanel();
-                }
             });
 
             if (window.innerWidth < 768) {
-                hidePropertiesPanel();
                 hideModelsPanel();
-
-                const mobileSliderButton = document.getElementById('togglePropertiesBtn');
-                if (mobileSliderButton) {
-                    mobileSliderButton.style.display = 'flex';
-                }
-
-                const mobileModelsButton = document.getElementById('toggleBuildingsBtn');
-                if (mobileModelsButton) {
-                    mobileModelsButton.style.display = 'flex';
-                }
-            }
-        }
-
-        function showPropertiesPanel() {
-            propertiesPanel.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-            propertiesPanel.classList.add('opacity-100', 'pointer-events-auto');
-        }
-
-        function hidePropertiesPanel() {
-            propertiesPanel.classList.add('opacity-0', 'pointer-events-none');
-            propertiesPanel.classList.remove('opacity-100', 'pointer-events-auto');
-        }
-
-        function togglePropertiesPanel() {
-            if (propertiesPanel.classList.contains('opacity-100')) {
-                hidePropertiesPanel();
-            } else {
-                showPropertiesPanel();
             }
         }
 
@@ -534,14 +456,17 @@
             if (models.length === 0) {
                 const noModelMsg = document.createElement('div');
                 noModelMsg.className = 'text-light/60 text-sm text-center py-4';
-                noModelMsg.textContent = '未识别到模型';
+                noModelMsg.textContent = '未识别到建筑';
                 modelsList.appendChild(noModelMsg);
                 return;
             }
 
-            let filteredModels = models;
+            let filteredModels = models.filter(model =>
+                !model.name.toLowerCase().includes('补丁')
+            );
+
             if (searchTerm.length > 0) {
-                filteredModels = models.filter(model =>
+                filteredModels = filteredModels.filter(model =>
                     model.name.toLowerCase().includes(searchTerm)
                 );
             }
@@ -564,7 +489,7 @@
             } else {
                 const noResult = document.createElement('div');
                 noResult.className = 'text-light/60 text-sm text-center py-4';
-                noResult.textContent = '未找到匹配的模型';
+                noResult.textContent = '未找到匹配的建筑';
                 modelsList.appendChild(noResult);
             }
         }
@@ -573,12 +498,12 @@
             console.log('初始化3D场景');
 
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x3D4758);
+            scene.background = new THREE.Color(0x1a1a2e);
 
-            ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
             scene.add(ambientLight);
 
-            directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
             directionalLight.position.set(10, 20, 15);
             scene.add(directionalLight);
 
@@ -599,6 +524,9 @@
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enabled = false;
+
+            rotationX = THREE.MathUtils.degToRad(60);
+            rotationZ = THREE.MathUtils.degToRad(-90);
 
             updateCameraPosition();
 
@@ -662,7 +590,7 @@
                     rotationZ -= deltaX * rotationSensitivity;
                     rotationX += deltaY * rotationSensitivity;
 
-                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
+                    rotationX = Math.max(0, Math.min(Math.PI / 2, rotationX));
 
                     updateCameraPosition();
 
@@ -745,7 +673,7 @@
                     rotationZ = touchStart.rotation.z - deltaX * rotationSensitivity;
                     rotationX = touchStart.rotation.x + deltaY * rotationSensitivity;
 
-                    rotationX = Math.max(-Math.PI * 0.47, Math.min(Math.PI * 0.47, rotationX));
+                    rotationX = Math.max(0, Math.min(Math.PI / 2, rotationX));
 
                     updateCameraPosition();
                 }
@@ -834,8 +762,6 @@
             window.addEventListener('resize', onWindowResize);
 
             setupControlPanelEvents();
-
-            setupPropertyControls();
         }
 
         function identifyModels(model) {
@@ -848,7 +774,7 @@
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
 
-                    let modelName = child.name || `模型 ${modelId + 1}`;
+                    let modelName = child.name || `建筑 ${modelId + 1}`;
                     modelName = modelName.replace(/_/g, ' ');
 
                     models.push({
@@ -872,7 +798,7 @@
 
                 models.push({
                     id: 0,
-                    name: "主模型",
+                    name: "主建筑",
                     object: model,
                     position: center,
                     size: size,
@@ -881,7 +807,7 @@
                 });
             }
 
-            console.log(`识别到 ${models.length} 个模型`);
+            console.log(`识别到 ${models.length} 个建筑`);
             filterModels(modelSearch.value.toLowerCase().trim());
         }
 
@@ -941,8 +867,8 @@
                 if (el) {
                     el.addEventListener('click', () => {
                         cameraDistance = 100;
-                        rotationX = 0;
-                        rotationZ = 0;
+                        rotationX = THREE.MathUtils.degToRad(60);
+                        rotationZ = THREE.MathUtils.degToRad(-90);
                         cameraTarget.set(0, 0, 0);
                         activeModelId = -1;
                         filterModels(modelSearch.value.toLowerCase().trim());
@@ -957,7 +883,9 @@
                             cameraTarget.copy(center);
                         }
 
-                        updateCameraPosition();
+                        camera.position.set(-840, 1050, -140);
+                        camera.lookAt(cameraTarget);
+
                         isOrbiting = false;
                         orbitToggleElements.forEach(btn => {
                             btn.classList.remove('bg-primary/20');
@@ -1026,66 +954,6 @@
             });
         }
 
-        function setupPropertyControls() {
-            const rotationSensitivitySlider = document.getElementById('rotationSensitivity');
-            const rotationSensitivityValue = document.getElementById('rotationSensitivityValue');
-
-            rotationSensitivitySlider.addEventListener('input', (e) => {
-                rotationSensitivity = parseFloat(e.target.value);
-                rotationSensitivityValue.textContent = rotationSensitivity.toFixed(4);
-            });
-
-            const panSensitivitySlider = document.getElementById('panSensitivity');
-            const panSensitivityValue = document.getElementById('panSensitivityValue');
-
-            panSensitivitySlider.addEventListener('input', (e) => {
-                panSensitivity = parseFloat(e.target.value);
-                panSensitivityValue.textContent = panSensitivity.toFixed(2);
-            });
-
-            const orbitSpeedSlider = document.getElementById('orbitSpeed');
-            const orbitSpeedValue = document.getElementById('orbitSpeedValue');
-
-            orbitSpeedSlider.addEventListener('input', (e) => {
-                rotationSpeed = parseFloat(e.target.value);
-                orbitSpeedValue.textContent = rotationSpeed.toFixed(3);
-            });
-
-            const movementSpeedSlider = document.getElementById('movementSpeed');
-            const movementSpeedValue = document.getElementById('movementSpeedValue');
-
-            movementSpeedSlider.addEventListener('input', (e) => {
-                movementSpeed = parseFloat(e.target.value);
-                movementSpeedValue.textContent = movementSpeed.toFixed(1);
-            });
-
-            const ambientLightSlider = document.getElementById('ambientLight');
-            const ambientLightValue = document.getElementById('ambientLightValue');
-
-            ambientLightSlider.addEventListener('input', (e) => {
-                ambientLight.intensity = parseFloat(e.target.value);
-                ambientLightValue.textContent = ambientLight.intensity.toFixed(1);
-            });
-
-            const directionalLightSlider = document.getElementById('directionalLight');
-            const directionalLightValue = document.getElementById('directionalLightValue');
-
-            directionalLightSlider.addEventListener('input', (e) => {
-                directionalLight.intensity = parseFloat(e.target.value);
-                directionalLightValue.textContent = directionalLight.intensity.toFixed(1);
-            });
-
-            const backgroundBrightnessSlider = document.getElementById('backgroundBrightness');
-            const backgroundBrightnessValue = document.getElementById('backgroundBrightnessValue');
-
-            backgroundBrightnessSlider.addEventListener('input', (e) => {
-                const value = parseFloat(e.target.value);
-                backgroundBrightnessValue.textContent = value.toFixed(2);
-                const colorValue = Math.floor(45 + value * 100);
-                scene.background = new THREE.Color(`rgb(${colorValue}, ${colorValue}, ${colorValue + 15})`);
-            });
-        }
-
         function updateCameraPosition() {
             if (!camera) return;
 
@@ -1093,11 +961,15 @@
             const y = Math.sin(rotationX) * cameraDistance;
             const z = Math.cos(rotationZ) * Math.cos(rotationX) * cameraDistance;
 
-            camera.position.set(
-                cameraTarget.x + x,
-                cameraTarget.y + y,
-                cameraTarget.z + z
-            );
+            const targetX = cameraTarget.x + x;
+            const targetY = cameraTarget.y + y;
+            const targetZ = cameraTarget.z + z;
+
+            const clampedX = Math.max(-2000, Math.min(2000, targetX));
+            const clampedY = Math.max(-2000, Math.min(2000, targetY));
+            const clampedZ = Math.max(-2000, Math.min(2000, targetZ));
+
+            camera.position.set(clampedX, clampedY, clampedZ);
 
             if (cameraLight) {
                 cameraLight.position.copy(camera.position);
@@ -1119,6 +991,10 @@
             cameraTarget.add(right.multiplyScalar(x));
             cameraTarget.y += y;
             cameraTarget.add(forward.multiplyScalar(z));
+
+            cameraTarget.x = Math.max(-2000, Math.min(2000, cameraTarget.x));
+            cameraTarget.y = Math.max(-2000, Math.min(2000, cameraTarget.y));
+            cameraTarget.z = Math.max(-2000, Math.min(2000, cameraTarget.z));
 
             updateCameraPosition();
         }
@@ -1201,8 +1077,11 @@
                     cameraDistance = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
                     cameraTarget.copy(center);
 
-                    rotationX = 0;
-                    rotationZ = 0;
+                    rotationX = THREE.MathUtils.degToRad(60);
+                    rotationZ = THREE.MathUtils.degToRad(-90);
+
+                    camera.position.set(-840, 1050, -140);
+                    camera.lookAt(cameraTarget);
 
                     model.traverse(child => {
                         if (child.isMesh && child.material) {
@@ -1211,11 +1090,12 @@
                     });
 
                     scene.add(model);
-                    updateCameraPosition();
+                    renderer.render(scene, camera);
 
                     setTimeout(() => {
                         loadingIndicator.classList.add('hidden');
                         progressBar.style.width = '0%';
+                        showConnectionToast();
                     }, 500);
 
                     controlPanel.classList.remove('opacity-50', 'pointer-events-none');
@@ -1261,4 +1141,4 @@
     </script>
 </body>
 </html>
-
+    
