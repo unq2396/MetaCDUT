@@ -473,7 +473,7 @@
             <div class="text-center p-6 tech-panel max-w-md">
                 <i class="fa fa-exclamation-triangle text-neon-pink text-5xl mb-4"></i>
                 <h2 class="text-xl font-bold text-neon-pink mb-2 font-orbitron">系統錯誤</h2>
-                <p class="text-light/80 mb-6">無法加載3D渲染庫，請檢查資源文件</p>
+                <p class="text-light/80 mb-6">無法加載3D渲染庫</p>
                 <button id="retryLoadResources" class="px-6 py-3 bg-neon-blue text-dark-1 font-orbitron hover:bg-neon-blue/80 rounded-lg transition-all">
                     重新嘗試
                 </button>
@@ -483,7 +483,7 @@
         <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark-1/90 z-40 transition-opacity duration-500 hidden">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 loading-spinner"></div>
-                <p class="mt-4 text-neon-blue font-orbitron">伺服器通信中…</p>
+                <p class="mt-4 text-neon-blue font-orbitron">伺服器通信中...</p>
                 <div id="loadingProgress" class="mt-2 w-48 h-1 bg-neon-blue/20 rounded-full overflow-hidden">
                     <div id="progressBar" class="h-full bg-neon-blue w-0 transition-all duration-300" style="box-shadow: 0 0 10px #00f3ff;"></div>
                 </div>
@@ -1404,12 +1404,12 @@
                     progressBar.style.width = percent + '%';
                 },
                 (error) => {
-                    console.error('模型加载错误:', error);
+                    console.error('數字孿生模型加載错误:', error);
 
                     loadingIndicator.classList.add('hidden');
                     progressBar.style.width = '0%';
 
-                    alert('無法加載模型文件');
+                    alert('數字孿生模型連線失敗');
                 }
             );
         }
@@ -1439,3 +1439,4 @@
     </script>
 </body>
 </html>
+
