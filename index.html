@@ -352,7 +352,7 @@
                     max-width: 270px !important;
                     z-index: 40 !important;
                 }
-    
+
                 .control-btn {
                     padding: 0.6rem !important;
                 }
@@ -483,7 +483,7 @@
         <div id="loadingIndicator" class="absolute inset-0 flex items-center justify-center bg-dark-1/90 z-40 transition-opacity duration-500 hidden">
             <div class="flex flex-col items-center">
                 <div class="w-16 h-16 loading-spinner"></div>
-                <p class="mt-4 text-neon-blue font-orbitron">伺服器通信中...</p>
+                <p id="loadingStatusText" class="mt-4 text-neon-blue font-orbitron">伺服器通信中...</p>
                 <div id="loadingProgress" class="mt-2 w-48 h-1 bg-neon-blue/20 rounded-full overflow-hidden">
                     <div id="progressBar" class="h-full bg-neon-blue w-0 transition-all duration-300" style="box-shadow: 0 0 10px #00f3ff;"></div>
                 </div>
@@ -546,7 +546,7 @@
                 </button>
             </div>
             <div class="space-y-4">
-                <p class="text-light/80">成都理工大學數字孿生系統 - 版本 1.0.0</p>
+                <p class="text-light/80">成都理工大學數字孿生系統 - 版本 1.0.1</p>
 
                 <div class="pt-2 border-t border-neon-blue/10">
                     <h3 class="font-semibold mb-2 text-neon-blue">桌面端控制方式：</h3>
@@ -624,9 +624,16 @@
         let lastTime = performance.now();
         let fps = 0;
 
+        const modelUrls = [
+            'http://cdn.cdut.top/model.glb',
+            'https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb'
+        ];
+        let currentUrlIndex = 0;
+
         const canvas = document.getElementById('viewerCanvas');
         const initialLoading = document.getElementById('initialLoading');
         const loadingIndicator = document.getElementById('loadingIndicator');
+        const loadingStatusText = document.getElementById('loadingStatusText');
         const progressBar = document.getElementById('progressBar');
         const uploadPrompt = document.getElementById('uploadPrompt');
         const controlPanel = document.getElementById('controlPanel');
@@ -661,7 +668,8 @@
             setTimeout(() => {
                 document.getElementById('initialLoading').classList.add('hidden');
 
-                loadModel('https://pub-c10bffdb38f848acb95ca9b5510a80f3.r2.dev/model.glb');
+                
+                loadModelWithFallback();
 
                 hideModelsPanel();
 
@@ -1342,16 +1350,27 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function loadModel(url) {
+       
+        function loadModelWithFallback() {
             if (!checkThreeJsLoaded()) return;
 
+            
+            if (currentUrlIndex >= modelUrls.length) {
+                loadingIndicator.classList.add('hidden');
+                progressBar.style.width = '0%';
+                alert('所有伺服器均連接失敗');
+                return;
+            }
+
+            const currentUrl = modelUrls[currentUrlIndex];
             const loader = new THREE.GLTFLoader();
 
             loadingIndicator.classList.remove('hidden');
             progressBar.style.width = '0%';
+            loadingStatusText.textContent = `与伺服器 ${currentUrlIndex + 1}/${modelUrls.length} 通信中...`;
 
             loader.load(
-                url,
+                currentUrl,
                 (gltf) => {
                     if (model) {
                         scene.remove(model);
@@ -1390,6 +1409,9 @@
                     scene.add(model);
                     renderer.render(scene, camera);
 
+                    
+                    currentUrlIndex = 0;
+
                     setTimeout(() => {
                         loadingIndicator.classList.add('hidden');
                         progressBar.style.width = '0%';
@@ -1404,12 +1426,13 @@
                     progressBar.style.width = percent + '%';
                 },
                 (error) => {
-                    console.error('數字孿生模型加載错误:', error);
+                    console.error(`与 ${currentUrl} 通信失敗:`, error);
 
-                    loadingIndicator.classList.add('hidden');
-                    progressBar.style.width = '0%';
-
-                    alert('數字孿生模型連線失敗');
+                   
+                    currentUrlIndex++;
+                    setTimeout(() => {
+                        loadModelWithFallback();
+                    }, 1000);
                 }
             );
         }
@@ -1432,6 +1455,8 @@
         document.getElementById('retryLoadResources').addEventListener('click', () => {
             document.getElementById('resourceError').classList.add('hidden');
             document.getElementById('initialLoading').classList.remove('hidden');
+            
+            currentUrlIndex = 0;
             setTimeout(initApplication, 500);
         });
 
@@ -1439,4 +1464,3 @@
     </script>
 </body>
 </html>
-
